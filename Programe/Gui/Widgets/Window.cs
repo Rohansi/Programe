@@ -103,7 +103,7 @@ namespace Programe.Gui.Widgets
         public void Add(Widget widget)
         {
             children.Add(widget);
-            widget.Parent = this;
+            widget.Initialize(this);
         }
 
         public void Remove(Widget widget)

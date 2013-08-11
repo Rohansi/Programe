@@ -6,7 +6,7 @@ namespace Programe.Gui
 {
     abstract class Widget
     {
-        public IContainer Parent;
+        public IContainer Parent { get; private set; }
 
         public bool Visible = true;
         public bool Focussed = false;
@@ -14,6 +14,11 @@ namespace Programe.Gui
         public int Left, Top;
         public uint Width { get; protected set; }
         public uint Height { get; protected set; }
+
+        public virtual void Initialize(IContainer parent)
+        {
+            Parent = parent;
+        }
 
         public virtual void Draw(TextRenderer renderer)
         {

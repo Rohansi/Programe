@@ -18,6 +18,8 @@ namespace Programe.Gui
         {
             SurfaceWidth = w;
             SurfaceHeight = h;
+            Width = w;
+            Height = h;
 
             children = new LinkedList<Widget>();
             focus = null;
@@ -25,13 +27,12 @@ namespace Programe.Gui
 
         public void Add(Widget widget)
         {
-            widget.Parent = this;
+            widget.Initialize(this);
             children.AddFirst(widget);
         }
 
         public void Remove(Widget widget)
         {
-            widget.Parent = null;
             children.Remove(widget);
 
             if (focus == widget)
@@ -90,15 +91,16 @@ namespace Programe.Gui
             var node = children.Last;
             while (node != null)
             {
-                var w = node.Value;
+                var widget = node.Value;
+                var next = node.Previous;
 
-                if (w.Visible)
+                if (widget.Visible)
                 {
-                    var region = renderer.Region(w.Left, w.Top, w.Width, w.Height);
+                    var region = renderer.Region(widget.Left, widget.Top, widget.Width, widget.Height);
                     node.Value.Draw(region);
                 }
 
-                node = node.Previous;
+                node = next;
             }
         }
 
@@ -120,28 +122,48 @@ namespace Programe.Gui
                     focus = null;
                 }
 
-                foreach (var widget in children.Where(w => w.Visible && ContainsPoint(w, x, y)))
+                var node = children.First;
+                while (node != null)
                 {
-                    widget.Focus();
-                    widget.MousePressed(x - widget.Left, y - widget.Top, button, true);
-                    return;
+                    var widget = node.Value;
+                    var next = node.Next;
+
+                    if (widget.Visible && ContainsPoint(widget, x, y))
+                    {
+                        widget.Focus();
+                        widget.MousePressed(x - widget.Left, y - widget.Top, button, true);
+                        return;
+                    }
+
+                    node = next;
                 }
             }
             else
             {
-                // broadcast release
-                foreach (var widget in children)
+                var node = children.First;
+                while (node != null)
                 {
+                    var widget = node.Value;
+                    var next = node.Next;
+
                     widget.MousePressed(x - widget.Left, y - widget.Top, button, false);
+
+                    node = next;
                 }
             }
         }
 
         public override void MouseMoved(int x, int y)
         {
-            foreach (var widget in children)
+            var node = children.First;
+            while (node != null)
             {
+                var widget = node.Value;
+                var next = node.Next;
+
                 widget.MouseMoved(x - widget.Left, y - widget.Top);
+
+                node = next;
             }
         }
 
