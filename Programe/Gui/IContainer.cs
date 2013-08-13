@@ -2,7 +2,7 @@
 
 namespace Programe.Gui
 {
-    interface IContainer
+    public interface IContainer
     {
         uint SurfaceWidth { get; }
         uint SurfaceHeight { get; }

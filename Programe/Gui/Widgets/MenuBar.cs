@@ -6,7 +6,7 @@ using Texter;
 
 namespace Programe.Gui.Widgets
 {
-    class MenuBar : Widget
+    public class MenuBar : Widget
     {
         public List<MenuItem> Items { get; private set; }
 
@@ -151,7 +151,7 @@ namespace Programe.Gui.Widgets
         }
     }
 
-    class MenuItem
+    public class MenuItem
     {
         public string Caption;
         public List<MenuItem> Items { get; private set; }

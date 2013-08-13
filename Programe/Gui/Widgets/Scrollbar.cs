@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SFML.Window;
 using Texter;
 
 namespace Programe.Gui.Widgets
 {
-    class Scrollbar : Widget
+    public class Scrollbar : Widget
     {
         private float internalValue;
         private bool dragging;

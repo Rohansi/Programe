@@ -4,7 +4,7 @@ using SFML.Window;
 
 namespace Programe.Gui
 {
-    class GuiSystem : Container
+    public class GuiSystem : Container
     {
         private RenderWindow window;
 

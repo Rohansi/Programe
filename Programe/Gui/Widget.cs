@@ -4,7 +4,7 @@ using Texter;
 
 namespace Programe.Gui
 {
-    abstract class Widget
+    public abstract class Widget
     {
         public IContainer Parent { get; private set; }
 

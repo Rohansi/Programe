@@ -6,7 +6,7 @@ using Texter;
 
 namespace Programe.Gui
 {
-    class Container : Widget, IContainer
+    public class Container : Widget, IContainer
     {
         private LinkedList<Widget> children;
         private Widget focus;

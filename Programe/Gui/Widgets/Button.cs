@@ -4,7 +4,7 @@ using Texter;
 
 namespace Programe.Gui.Widgets
 {
-    class Button : Widget
+    public class Button : Widget
     {
         private bool holding;
 

@@ -4,7 +4,7 @@ using Texter;
 
 namespace Programe.Gui.Widgets
 {
-    class Window : Widget, IContainer
+    public class Window : Widget, IContainer
     {
         private Container children;
         private bool dragging;

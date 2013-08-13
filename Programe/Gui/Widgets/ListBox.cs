@@ -7,7 +7,7 @@ using Texter;
 
 namespace Programe.Gui.Widgets
 {
-    class ListBoxItem
+    public class ListBoxItem
     {
         public string Text;
         public object Tag;
@@ -19,7 +19,7 @@ namespace Programe.Gui.Widgets
         }
     }
 
-    class ListBox : Widget
+    public class ListBox : Widget
     {
         public List<ListBoxItem> Items { get; private set; }
         public int Selected;

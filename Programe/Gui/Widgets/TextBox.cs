@@ -4,7 +4,7 @@ using Texter;
 
 namespace Programe.Gui.Widgets
 {
-    class TextBox : Widget
+    public class TextBox : Widget
     {
         private string value;
         private int selectedIndex;
@@ -12,6 +12,7 @@ namespace Programe.Gui.Widgets
         private int frames;
         private bool caretVisible;
 
+        public char? PasswordCharacter;
         public event Action Changed;
 
         public TextBox(int x, int y, uint w)
@@ -54,8 +55,12 @@ namespace Programe.Gui.Widgets
             if (Value.Length < Width)
                 view = 0;
 
+            var text = Value.Substring(view);
+            if (PasswordCharacter.HasValue)
+                text = new string(PasswordCharacter.Value, text.Length);
+
             renderer.Clear(Character.Create(0, 16, 2));
-            renderer.DrawString(0, 0, Value.Substring(view), Character.Create(0));
+            renderer.DrawString(0, 0, text, Character.Create(0));
 
             frames++;
             if (frames >= 30)

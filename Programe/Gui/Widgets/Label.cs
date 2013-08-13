@@ -3,7 +3,7 @@ using Texter;
 
 namespace Programe.Gui.Widgets
 {
-    class Label : Widget
+    public class Label : Widget
     {
         public string Caption;
 
