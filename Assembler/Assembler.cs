@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Programe.Machine;
 
 namespace Assembler
 {
@@ -7,7 +8,7 @@ namespace Assembler
     {
         private TokenList<Token> tokens;
         private int pos;
-        private List<Instruction> instructions;
+        private List<AssemblerInstruction> instructions;
         private Dictionary<string, Label> labels;
         private byte[] binary;
 
@@ -27,7 +28,7 @@ namespace Assembler
             tokenizer.Scan();
 
             tokens = tokenizer.Tokens;
-            instructions = new List<Instruction>();
+            instructions = new List<AssemblerInstruction>();
             labels = new Dictionary<string, Label>();
 
             Parse();
@@ -167,45 +168,7 @@ namespace Assembler
             }
         }
 
-        #region Operand Counts
-        private static Dictionary<Opcode, int> operandCounts = new Dictionary<Opcode, int>
-        {
-            { Opcode.Mov,     2 },
-            { Opcode.Add,     2 },
-            { Opcode.Sub,     2 },
-            { Opcode.Mul,     2 },
-            { Opcode.Div,     2 },
-            { Opcode.Mod,     2 },
-            { Opcode.Inc,     1 },
-            { Opcode.Dec,     1 },
-            { Opcode.Not,     1 },
-            { Opcode.And,     2 },
-            { Opcode.Or,      2 },
-            { Opcode.Xor,     2 },
-            { Opcode.Shl,     2 },
-            { Opcode.Shr,     2 },
-            { Opcode.Push,    1 },
-            { Opcode.Pop,     1 },
-            { Opcode.Jmp,     1 },
-            { Opcode.Call,    1 },
-            { Opcode.Ret,     0 },
-            { Opcode.Cmp,     2 },
-            { Opcode.Jz,      1 },
-            { Opcode.Jnz,     1 },
-            { Opcode.Je,      1 },
-            { Opcode.Jne,     1 },
-            { Opcode.Ja,      1 },
-            { Opcode.Jae,     1 },
-            { Opcode.Jb,      1 },
-            { Opcode.Jbe,     1 },
-            { Opcode.Rand,    1 },
-            { Opcode.Int,     1 },
-            { Opcode.Iret,    0 },
-            { Opcode.Ivt,     1 },
-        };
-        #endregion
-
-        private Instruction ParseInstruction()
+        private AssemblerInstruction ParseInstruction()
         {
             var t = tokens[pos++];
 
@@ -213,19 +176,19 @@ namespace Assembler
             if (!Enum.TryParse(t.Value, true, out opcode))
                 throw new AssemblerException(string.Format("Expected opcode on line {0}.", t.Line));
 
-            var operandCount = operandCounts[opcode];
+            var operandCount = Instruction.OperandCounts[opcode];
 
             if (operandCount == 0)
-                return new Instruction(t.Line, opcode, null, null);
+                return new AssemblerInstruction(t.Line, opcode, null, null);
 
             var left = ParseOperand();
 
             if (operandCount == 1)
-                return new Instruction(t.Line, opcode, left, null);
+                return new AssemblerInstruction(t.Line, opcode, left, null);
 
             Require(TokenType.Comma);
             var right = ParseOperand();
-            return new Instruction(t.Line, opcode, left, right);
+            return new AssemblerInstruction(t.Line, opcode, left, right);
         }
 
         private Operand ParseOperand()

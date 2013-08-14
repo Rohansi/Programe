@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Programe.Machine;
 
 namespace Assembler
 {
-    public enum Opcode : byte
-    {
-        Mov, Add, Sub, Mul, Div, Mod, Inc, Dec, Not, And, Or,
-        Xor, Shl, Shr, Push, Pop, Jmp, Call, Ret, Cmp, Jz, Jnz,
-        Je, Jne, Ja, Jae, Jb, Jbe, Rand, Int, Iret, Ivt, None
-    }
-
-    public class Instruction
+    public class AssemblerInstruction
     {
         public readonly Opcode Opcode;
         public readonly Operand Left;
         public readonly Operand Right;
         public readonly int Line;
 
-        public Instruction()
+        public AssemblerInstruction()
         {
             Line = -1;
             Opcode = Opcode.None;
@@ -27,7 +19,7 @@ namespace Assembler
             Right = null;
         }
 
-        public Instruction(int line, Opcode opcode, Operand left, Operand right)
+        public AssemblerInstruction(int line, Opcode opcode, Operand left, Operand right)
         {
             Line = line;
             Opcode = opcode;
@@ -42,7 +34,6 @@ namespace Assembler
 
             if (Left != null)
             {
-                opcode[0] |= (byte)((int)Left.Register << 4);
                 opcode[3] = (byte)Left.TypeId;
 
                 if (Left.Pointer)
@@ -57,7 +48,6 @@ namespace Assembler
 
             if (Right != null)
             {
-                opcode[0] |= (byte)Right.Register;
                 opcode[2] = (byte)Right.TypeId;
 
                 if (Right.Pointer)
@@ -86,7 +76,7 @@ namespace Assembler
         }
     }
 
-    public class DataInstruction : Instruction
+    public class DataInstruction : AssemblerInstruction
     {
         private List<short> data = new List<short>();
         

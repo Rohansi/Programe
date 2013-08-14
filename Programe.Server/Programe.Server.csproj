@@ -45,8 +45,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Account.cs" />
+    <Compile Include="Devices\Propulsion.cs" />
+    <Compile Include="Devices\Timer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server.cs" />
+    <Compile Include="Ship.cs" />
+    <Compile Include="Game.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Programe.Machine\Programe.Machine.csproj">
+      <Project>{b1f866c5-9f6f-4fce-be2c-b02a2e950151}</Project>
+      <Name>Programe.Machine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Programe.Network\Programe.Network.csproj">
+      <Project>{5e7e9fd3-2c61-4d72-b187-e0421ffc03ad}</Project>
+      <Name>Programe.Network</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

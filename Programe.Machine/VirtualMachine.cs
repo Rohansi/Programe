@@ -44,6 +44,14 @@ namespace Programe.Machine
             devices = new Device[32];
         }
 
+        public void Attach(Device device)
+        {
+            if (devices[device.Id] != null)
+                throw new Exception("Duplicate Device ID");
+
+            devices[device.Id] = device;
+        }
+
         public void Step()
         {
             errorIP = IP;

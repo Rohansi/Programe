@@ -4,6 +4,8 @@ using System.IO;
 
 namespace Assembler
 {
+    // TODO: move stuff like Opcode and OperandCounts to Programe.Machine
+
     class Program
     {
         static void Main(string[] args)

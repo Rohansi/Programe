@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
-using Lidgren.Network;
+using Programe.Network;
 
 namespace Programe.Server
 {
@@ -11,44 +11,46 @@ namespace Programe.Server
     {
         static void Main(string[] args)
         {
-            var config = new NetPeerConfiguration("Programe");
-            config.Port = 17394;
+            var bytes = File.ReadAllBytes("out.pge");
+            var shorts = new short[bytes.Length / 2];
+            Buffer.BlockCopy(bytes, 0, shorts, 0, bytes.Length);
 
-            var server = new NetServer(config);
-            server.Start();
+            var ships = new List<Ship>();
+
+            for (var i = 0; i < 1; i++)
+            {
+                ships.Add(new Ship(i.ToString("G"), shorts));
+            }
+
+            Server.Start();
+
+            var watch = Stopwatch.StartNew();
+            var accumulator = 0.0;
 
             while (true)
             {
-                NetIncomingMessage im;
-                while ((im = server.ReadMessage()) != null)
+                accumulator += watch.Elapsed.TotalSeconds;
+
+                // TODO: auto adjust VM speed if too laggy
+
+                if (accumulator >= (Constants.SecondsPerUpdate * 4))
                 {
-                    switch (im.MessageType)
-                    {
-                        case NetIncomingMessageType.DebugMessage:
-                        case NetIncomingMessageType.ErrorMessage:
-                        case NetIncomingMessageType.WarningMessage:
-                        case NetIncomingMessageType.VerboseDebugMessage:
-                            Console.WriteLine(im.ReadString());
-                            break;
-
-                        case NetIncomingMessageType.StatusChanged:
-                            var status = (NetConnectionStatus)im.ReadByte();
-
-                            string reason = im.ReadString();
-                            Console.WriteLine(NetUtility.ToHexString(im.SenderConnection.RemoteUniqueIdentifier) + " " + status + ": " + reason);
-                            break;
-
-                        case NetIncomingMessageType.Data:
-                            break;
-
-                        default:
-                            Console.WriteLine("Unhandled type: " + im.MessageType);
-                            break;
-                    }
-
-                    server.Recycle(im);
+                    // TODO: way too laggy
+                    Console.WriteLine("Cant keep up etc");
                 }
 
+                Server.Update();
+                while (accumulator >= Constants.SecondsPerUpdate)
+                {
+                    foreach (var ship in ships)
+                    {
+                        ship.Update();
+                    }
+
+                    accumulator -= Constants.SecondsPerUpdate;
+                }
+
+                watch.Restart();
                 Thread.Sleep(1);
             }
         }

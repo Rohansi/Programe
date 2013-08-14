@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace Programe.Machine
 {
@@ -61,6 +62,30 @@ namespace Programe.Machine
             }
 
             machine.Memory[Get(false)] = value;
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            if (pointer)
+                sb.Append('[');
+            if (offset)
+                sb.AppendFormat("R{0:X} + ", offsetRegister);
+
+            if (type <= 0x0F)
+                sb.AppendFormat("R{0:X}", type);
+            if (type == 0x10)
+                sb.Append("IP");
+            if (type == 0x11)
+                sb.Append("SP");
+            if (type == 0x12)
+                sb.Append(payload);
+
+            if (pointer)
+                sb.Append(']');
+
+            return sb.ToString();
         }
     }
 }
