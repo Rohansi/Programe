@@ -41,10 +41,17 @@ namespace Programe
                 Window.SetView(overlayView);
                 Window.DispatchEvents();
 
-                Window.Clear(new Color(100, 149, 237));
+                Window.Clear(Color.Black);
                 Window.SetView(GameView);
 
                 // draw stuff
+                if (Client.Objects != null)
+                {
+                    foreach (var o in Client.Objects)
+                    {
+                        Window.Draw(o);
+                    }
+                }
 
                 Window.SetView(overlayView);
                 Overlay.Clear(Character.Blank);

@@ -52,5 +52,15 @@ namespace Programe.Server
                 server.Recycle(msg);
             }
         }
+
+        public static NetOutgoingMessage CreateMessage()
+        {
+            return server.CreateMessage();
+        }
+
+        public static void Broadcast(NetOutgoingMessage message, NetDeliveryMethod method, int sequenceChannel)
+        {
+            server.SendToAll(message, null, method, sequenceChannel);
+        }
     }
 }

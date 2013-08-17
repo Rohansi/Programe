@@ -1,13 +1,15 @@
 ﻿using System;
 using Programe.Machine;
+using Programe.Network;
 
 namespace Programe.Server.Devices
 {
-    class Timer : Device
+    public class Timer : Device
     {
-        private const int ClocksPerTick = 1000;
+        private const double TickEvery = 0.1;
 
-        private int clocks;
+        private double timer;
+        private bool interruptRequest;
 
         public override byte Id
         {
@@ -16,21 +18,24 @@ namespace Programe.Server.Devices
 
         public override bool InterruptRequest
         {
-            get
-            {
-                clocks++;
-                return clocks >= ClocksPerTick;
-            }
+            get { return interruptRequest; }
         }
 
         public override void HandleInterruptRequest(VirtualMachine machine)
         {
-            clocks -= ClocksPerTick;
+            timer -= TickEvery;
+            interruptRequest = timer >= TickEvery;
         }
 
         public override void HandleInterrupt(VirtualMachine machine)
         {
-            
+            //Console.WriteLine(machine.Registers[0x7]);
+        }
+
+        public void Update()
+        {
+            timer += Constants.SecondsPerUpdate;
+            interruptRequest = timer >= TickEvery;
         }
     }
 }

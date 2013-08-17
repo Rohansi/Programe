@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{338E77C2-47D0-42AD-924F-1E36BE984C81}</ProjectGuid>
+    <ProjectGuid>{AF128F68-88D7-42D4-A677-27B2D93B270E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Programe.Server</RootNamespace>
-    <AssemblyName>Programe.Server</AssemblyName>
+    <RootNamespace>PhysicsTest</RootNamespace>
+    <AssemblyName>PhysicsTest</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,8 +22,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -35,9 +35,14 @@
     <Reference Include="FarseerPhysics">
       <HintPath>..\Libraries\FarseerPhysics.dll</HintPath>
     </Reference>
-    <Reference Include="Lidgren.Network, Version=2011.3.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\Lidgren.Network.dll</HintPath>
+    <Reference Include="sfmlnet-audio-2">
+      <HintPath>..\Libraries\sfmlnet-audio-2.dll</HintPath>
+    </Reference>
+    <Reference Include="sfmlnet-graphics-2">
+      <HintPath>..\Libraries\sfmlnet-graphics-2.dll</HintPath>
+    </Reference>
+    <Reference Include="sfmlnet-window-2">
+      <HintPath>..\Libraries\sfmlnet-window-2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,28 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Account.cs" />
-    <Compile Include="BodyData.cs" />
-    <Compile Include="Devices\Engines.cs" />
-    <Compile Include="Devices\Navigation.cs" />
-    <Compile Include="Devices\Radar.cs" />
-    <Compile Include="Devices\Timer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Server.cs" />
-    <Compile Include="Ship.cs" />
-    <Compile Include="Game.cs" />
-    <Compile Include="Util.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Programe.Machine\Programe.Machine.csproj">
-      <Project>{b1f866c5-9f6f-4fce-be2c-b02a2e950151}</Project>
-      <Name>Programe.Machine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Programe.Network\Programe.Network.csproj">
-      <Project>{5e7e9fd3-2c61-4d72-b187-e0421ffc03ad}</Project>
-      <Name>Programe.Network</Name>
-    </ProjectReference>
+    <Compile Include="SFMLDebugView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

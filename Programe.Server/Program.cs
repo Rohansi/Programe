@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -15,43 +14,36 @@ namespace Programe.Server
             var shorts = new short[bytes.Length / 2];
             Buffer.BlockCopy(bytes, 0, shorts, 0, bytes.Length);
 
-            var ships = new List<Ship>();
-
-            for (var i = 0; i < 1; i++)
-            {
-                ships.Add(new Ship(i.ToString("G"), shorts));
-            }
-
+            Game.Start();
             Server.Start();
 
+            for (var i = 0; i < 5; i++)
+            {
+                Game.Spawn(new Ship(i.ToString("G"), shorts));
+            }
+            
             var watch = Stopwatch.StartNew();
             var accumulator = 0.0;
 
             while (true)
             {
-                accumulator += watch.Elapsed.TotalSeconds;
+                var elapsed = watch.Elapsed.TotalSeconds;
+                accumulator += elapsed;
+                watch.Restart();
 
-                // TODO: auto adjust VM speed if too laggy
-
-                if (accumulator >= (Constants.SecondsPerUpdate * 4))
+                if (accumulator >= 1)
                 {
-                    // TODO: way too laggy
-                    Console.WriteLine("Cant keep up etc");
+                    accumulator = 0;
                 }
 
                 Server.Update();
                 while (accumulator >= Constants.SecondsPerUpdate)
                 {
-                    foreach (var ship in ships)
-                    {
-                        ship.Update();
-                    }
-
+                    Game.Update();
                     accumulator -= Constants.SecondsPerUpdate;
                 }
 
-                watch.Restart();
-                Thread.Sleep(1);
+                Thread.Sleep(4);
             }
         }
     }
