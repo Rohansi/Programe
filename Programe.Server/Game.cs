@@ -21,10 +21,10 @@ namespace Programe.Server
             world = new World(new Vector2(0, 0));
             ships = new List<Ship>();
 
-            CreateBounds(10, 10);
+            CreateBounds(20, 12);
 
             var asteroid = CreateAsteroid();
-            asteroid.Position = new Vector2(8, 4);
+            asteroid.Position = new Vector2(8, 2);
         }
 
         public static void Update()
@@ -89,8 +89,8 @@ namespace Programe.Server
             var body = CreateShip();
             body.UserData = new BodyData(1, ship);
             body.Position = new Vector2(2 + x, 8);
-            x += 3;
-            body.Rotation = -100.7f;
+            x += 3f;
+            body.Rotation = 2f;
 
             ship.Spawn(world, body);
             ships.Add(ship);

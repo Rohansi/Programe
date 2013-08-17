@@ -235,7 +235,7 @@ namespace PhysicsTest
 
         public static Vector2 LengthDir(float dir, float len)
         {
-            return new Vector2((float)Math.Cos(dir) * len, (float)-Math.Sin(dir) * len);
+            return new Vector2((float)Math.Cos(dir) * len, (float)Math.Sin(dir) * len);
         }
     }
 }

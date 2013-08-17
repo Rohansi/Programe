@@ -17,7 +17,7 @@ namespace Programe.Server
             Game.Start();
             Server.Start();
 
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 6; i++)
             {
                 Game.Spawn(new Ship(i.ToString("G"), shorts));
             }

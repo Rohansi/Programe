@@ -41,8 +41,7 @@ namespace Programe.Server.Devices
                     machine.Registers[0xA] = Util.ToMachineRotation(body.AngularVelocity);
                     break;
                 case 2: // heading
-                    machine.Registers[0xA] = Util.ToMachineRotation(body.Rotation);
-                    Console.WriteLine("{0} -> {1}", body.Rotation, machine.Registers[0xA]);
+                    machine.Registers[0xA] = Util.ToMachineRotation(body.Rotation - ((float)Math.PI / 2));
                     break;
             }
         }

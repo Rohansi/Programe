@@ -29,7 +29,7 @@ namespace Programe.Server.Devices
 
         public override void HandleInterrupt(VirtualMachine machine)
         {
-            //Console.WriteLine(machine.Registers[0x7]);
+        
         }
 
         public void Update()
