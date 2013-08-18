@@ -94,7 +94,7 @@ namespace Assembler
                 if (instruction.Left != null && instruction.Left.Type == OperandType.Label)
                 {
                     if (!labels.TryGetValue(instruction.Left.Label, out label))
-                        throw new AssemblerException(string.Format("Unresolved label '{0}' on line {1}.", instruction.Left.Label,
+                        throw new AssemblerException(string.Format("Unresolved label '{0}' on line {1}", instruction.Left.Label,
                                                                     instruction.Left.Line));
 
                     instruction.Left.Payload = (short)label.Address;
@@ -103,7 +103,7 @@ namespace Assembler
                 if (instruction.Right != null && instruction.Right.Type == OperandType.Label)
                 {
                     if (!labels.TryGetValue(instruction.Right.Label, out label))
-                        throw new AssemblerException(string.Format("Unresolved label '{0}' on line {1}.", instruction.Right.Label, instruction.Right.Line));
+                        throw new AssemblerException(string.Format("Unresolved label '{0}' on line {1}", instruction.Right.Label, instruction.Right.Line));
 
                     instruction.Right.Payload = (short)label.Address;
                 }
@@ -142,7 +142,7 @@ namespace Assembler
 
                     var label = prefix + t.Value;
                     if (labels.ContainsKey(label))
-                        throw new AssemblerException(string.Format("Duplicate label '{0}' on line {1}.", label, t.Line));
+                        throw new AssemblerException(string.Format("Duplicate label '{0}' on line {1}", label, t.Line));
 
                     labels.Add(label, new Label(label, instructions.Count));
                     pos++;
@@ -176,9 +176,27 @@ namespace Assembler
 
                     instructions.Add(data);
                 }
+                else if (t.Type == TokenType.Word && t.Value.ToLower() == "resv")
+                {
+                    t = tokens[++pos];
+
+                    if (t.Type != TokenType.Number)
+                        throw new AssemblerException(string.Format("Expected Number on line {0}", t.Line));
+
+                    var data = new DataInstruction();
+                    var count = short.Parse(t.Value);
+
+                    for (var i = 0; i < count; i++)
+                    {
+                        data.Add(0);
+                    }
+
+                    pos++;
+                    instructions.Add(data);
+                }
                 else
                 {
-                    throw new AssemblerException(string.Format("Unexpected {0} on line {1}.", t.Type, t.Line));
+                    throw new AssemblerException(string.Format("Unexpected {0} on line {1}", t.Type, t.Line));
                 }
 
                 t = tokens[pos];
@@ -191,7 +209,7 @@ namespace Assembler
 
             Opcode opcode;
             if (!Enum.TryParse(t.Value, true, out opcode))
-                throw new AssemblerException(string.Format("Expected opcode on line {0}.", t.Line));
+                throw new AssemblerException(string.Format("Expected opcode on line {0}", t.Line));
 
             var operandCount = Instruction.OperandCounts[opcode];
 

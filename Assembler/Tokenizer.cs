@@ -244,7 +244,7 @@ namespace Assembler
                 if (e is IndexOutOfRangeException ||
                     e is ArgumentOutOfRangeException)
                 {
-                    throw new AssemblerException(string.Format("Unexpected end of file from token on line {0}.", currentLine), e);
+                    throw new AssemblerException(string.Format("Unexpected end of file from token on line {0}", currentLine), e);
                 }
                 throw;
             }
