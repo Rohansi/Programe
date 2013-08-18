@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FarseerPhysics">
+      <HintPath>..\Libraries\FarseerPhysics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,11 +43,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Device.cs" />
+    <Compile Include="Devices\Engines.cs" />
+    <Compile Include="Devices\Navigation.cs" />
+    <Compile Include="Devices\Radar.cs" />
+    <Compile Include="Devices\Timer.cs" />
     <Compile Include="Instruction.cs" />
     <Compile Include="Operand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RadarData.cs" />
+    <Compile Include="Util.cs" />
     <Compile Include="VirtualMachine.cs" />
     <Compile Include="VirtualMachineException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Programe.Network\Programe.Network.csproj">
+      <Project>{5e7e9fd3-2c61-4d72-b187-e0421ffc03ad}</Project>
+      <Name>Programe.Network</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

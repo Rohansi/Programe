@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Programe.Server
+namespace Programe.Machine
 {
     /// <summary>
     /// Stores information for the radar.

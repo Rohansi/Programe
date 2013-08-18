@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Programe.Server.Devices;
+using Programe.Machine.Devices;
 
-namespace Programe.Server
+namespace Programe.Machine
 {
     public static class Util
     {

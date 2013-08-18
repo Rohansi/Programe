@@ -3,7 +3,7 @@ using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Programe.Machine;
 using Programe.Network;
-using Programe.Server.Devices;
+using Programe.Machine.Devices;
 
 namespace Programe.Server
 {
@@ -45,6 +45,19 @@ namespace Programe.Server
 
             radar = new Radar(world, body);
             machine.Attach(radar);
+
+            body.OnCollision += (a, b, contact) =>
+            {
+                var linear = a.Body.LinearVelocity - b.Body.LinearVelocity;
+                var angular = a.Body.AngularVelocity - b.Body.AngularVelocity;
+
+                if (Math.Abs(linear.X) > 4 || Math.Abs(linear.Y) > 4 || Math.Abs(angular) > 4)
+                {
+                    // TODO: take damage
+                }
+
+                return true;
+            };
         }
 
         public void Update()

@@ -1,8 +1,7 @@
 ﻿using System;
-using Programe.Machine;
 using Programe.Network;
 
-namespace Programe.Server.Devices
+namespace Programe.Machine.Devices
 {
     public class Timer : Device
     {

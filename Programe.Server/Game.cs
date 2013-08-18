@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FarseerPhysics.Collision;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
+using Programe.Machine;
 using Programe.Network;
 
 namespace Programe.Server
@@ -18,6 +18,7 @@ namespace Programe.Server
 
         public static void Start()
         {
+            // TODO: investivate fix for farseer quadreee: http://farseerphysics.codeplex.com/workitem/30555
             world = new World(new Vector2(0, 0));
             ships = new List<Ship>();
 
@@ -97,6 +98,7 @@ namespace Programe.Server
             ships.Add(ship);
         }
 
+        #region Physics Objects
         private static void CreateBullets(Body ship)
         {
             Func<Vector2, Body> createBullet = pos =>
@@ -143,33 +145,6 @@ namespace Programe.Server
             body.CreateFixture(rect1);
             body.CreateFixture(rect2);
 
-            // TODO: move to Ship.cs
-            body.OnCollision += (a, b, contact) =>
-            {
-                var hit = false;
-                var linear = a.Body.LinearVelocity - b.Body.LinearVelocity;
-                var angular = a.Body.AngularVelocity - b.Body.AngularVelocity;
-
-                if (Math.Abs(linear.X) > 4)
-                {
-                    hit = true;
-                    // TODO
-                }
-
-                if (!hit && Math.Abs(linear.Y) > 4)
-                {
-                    hit = true;
-                    // TODO
-                }
-
-                if (!hit && Math.Abs(angular) > 4)
-                {
-                    // TODO
-                }
-
-                return true;
-            };
-
             return body;
         }
 
@@ -209,5 +184,6 @@ namespace Programe.Server
             body.CreateFixture(left);
             body.CreateFixture(right);
         }
+        #endregion
     }
 }

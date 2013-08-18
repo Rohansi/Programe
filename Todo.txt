@@ -1,0 +1,6 @@
+[ ] - Fix game/network code structure (it currently has none)
+[ ] - Reduce precision of streamed data, nothing needs 4 bytes
+[ ] - Move GUI to into Programe.Gui
+[ ] - Offline Debugger
+   [ ] - Machine state inspection, breakpoints
+   [ ] - Player vs. AI

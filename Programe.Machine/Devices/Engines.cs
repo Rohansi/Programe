@@ -1,7 +1,6 @@
 ﻿using System;
-using Programe.Machine;
 
-namespace Programe.Server.Devices
+namespace Programe.Machine.Devices
 {
     public class Engines : Device
     {

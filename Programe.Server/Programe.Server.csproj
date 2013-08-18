@@ -49,17 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account.cs" />
-    <Compile Include="RadarData.cs" />
-    <Compile Include="Devices\Engines.cs" />
-    <Compile Include="Devices\Navigation.cs" />
-    <Compile Include="Devices\Radar.cs" />
-    <Compile Include="Devices\Timer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Ship.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Programe.Machine\Programe.Machine.csproj">
