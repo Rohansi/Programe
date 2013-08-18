@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DebugInfo.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="Devices\Engines.cs" />
     <Compile Include="Devices\Navigation.cs" />

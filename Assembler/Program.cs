@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 
 namespace Assembler
@@ -8,50 +7,31 @@ namespace Assembler
     {
         static void Main(string[] args)
         {
-            if (args.Length < 2 || (args[0] == "locate" && args.Length < 3))
+            if (args.Length < 2)
             {
                 Console.WriteLine("Usage:");
-                Console.WriteLine("  assembler input.asm output.pge");
-                Console.WriteLine("  assembler locate input.asm address");
+                Console.WriteLine("  assembler input.pga output.pge [output.pgd]");
                 return;
             }
 
-            var input = args[0];
-            var output = args[1];
+            var index = 0;
 
             try
             {
-                if (args[0] == "locate")
+                var input = args[index++];
+                var output = args[index++];
+                var debug = args.Length >= 3 ? args[index] : null;
+
+                var assembler = new Assembler(File.ReadAllText(input));
+                assembler.Assemble();
+                File.WriteAllBytes(output, assembler.Binary);
+
+                if (debug != null)
                 {
-                    input = args[1];
-                    output = "";
+                    assembler.Debug.Save(debug);
                 }
 
-                var a = new Assembler(File.ReadAllText(input));
-
-                if (args[0] == "locate")
-                {
-                    short address;
-                    if (!short.TryParse(args[2], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out address))
-                    {
-                        Console.WriteLine("Address not valid (must be hexadecimal without a prefix)");
-                        return;
-                    }
-
-                    try
-                    {
-                        a.Locate(address);
-                    }
-                    catch (ArgumentException e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                }
-                else
-                {
-                    File.WriteAllBytes(output, a.Binary);
-                    Console.WriteLine("Assembled to {0} words", a.Binary.Length / 2);
-                }
+                Console.WriteLine("Assembled to {0} words", assembler.Binary.Length / 2);
             }
             catch (AssemblerException e)
             {

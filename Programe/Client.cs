@@ -9,6 +9,7 @@ namespace Programe
     {
         private static NetClient client;
 
+        public static string Server = "127.0.0.1";
         public static bool Connected { get; private set; }
         public static List<NetworkObject> Objects;
          
@@ -42,13 +43,13 @@ namespace Programe
                         {
                             Connected = true;
                             Interface.Connected();
-                            Interface.AddStatusMessage("Connected to server");
+                            Interface.AddStatusMessage(string.Format("Connected to server ({0})", Server));
                         }
                         else if (status == NetConnectionStatus.Disconnected)
                         {
                             Connected = false;
                             Interface.Disconnected();
-                            Interface.AddStatusMessage("Disconnected from server");
+                            Interface.AddStatusMessage("Disconnected");
                             Connect();
                         }
                         break;
@@ -70,9 +71,14 @@ namespace Programe
             // todo
         }
 
+        public static void Register(string username, string password)
+        {
+            // todo
+        }
+
         private static void Connect()
         {
-            client.Connect(Constants.Server, Constants.Port);
+            client.Connect(Server, Constants.Port);
         }
 
         private static void HandleMessage(NetIncomingMessage message)
@@ -83,10 +89,12 @@ namespace Programe
                 case 10:
                 {
                     var newObjects = new List<NetworkObject>();
+
                     while (message.Position < message.LengthBits)
                     {
                         newObjects.Add(new NetworkObject(message));
                     }
+
                     Console.WriteLine("DATA! " + DateTime.Now.Millisecond + " " + newObjects.Count);
                     Objects = newObjects;
                     break;

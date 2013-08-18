@@ -6,57 +6,33 @@ namespace Assembler
 {
     class Assembler
     {
+        private string source;
         private TokenList<Token> tokens;
         private int pos;
         private List<AssemblerInstruction> instructions;
         private Dictionary<string, Label> labels;
-        private byte[] binary;
         private string parentLabel;
 
-        public byte[] Binary
+        public byte[] Binary;
+        public DebugInfo Debug;
+
+        public Assembler(string sourceText)
         {
-            get
-            {
-                if (binary == null)
-                    Build();
-                return binary;
-            }
+            source = sourceText;
+
+            instructions = new List<AssemblerInstruction>();
+            labels = new Dictionary<string, Label>();
+            Debug = new DebugInfo();
         }
 
-        public Assembler(string source)
+        public void Assemble()
         {
             var tokenizer = new AssemblyTokenizer(source);
             tokenizer.Scan();
-
             tokens = tokenizer.Tokens;
-            instructions = new List<AssemblerInstruction>();
-            labels = new Dictionary<string, Label>();
 
             Parse();
-        }
-
-        public void Locate(short address)
-        {
-            var offset = 0;
-            for (var i = 0; i < instructions.Count; i++)
-            {
-                var instruction = instructions[i];
-
-                if (offset == address)
-                {
-                    throw new ArgumentException(string.Format("Address refers to instruction on line {0}", instruction.Line));
-                }
-
-                if (offset > address)
-                {
-                    throw new ArgumentException(string.Format("Address refers to something on line {0} (wrong file?)", instruction.Line));
-                }
-
-                var shorts = instruction.Assemble();
-                offset += shorts.Length;
-            }
-
-            throw new ArgumentException("Address not found (wrong file?)");
+            Build();
         }
 
         private void Build()
@@ -70,21 +46,25 @@ namespace Assembler
                 foreach (var label in labels.Values)
                 {
                     if (label.Index == i)
+                    {
                         label.Address = offset;
+                        Debug.AddSymbol(label.Name, label.Address);
+                    }
                 }
 
+                Debug.AddLineAddress(instruction.Line, offset);
                 var shorts = instruction.Assemble();
                 offset += shorts.Length;
             }
-
-            if (offset > short.MaxValue)
-                throw new AssemblerException(string.Format("Programs must be less than 32767 words, currently using {0} words", offset));
 
             foreach (Label label in labels.Values)
             {
                 if (label.Address == 0 && label.Index >= instructions.Count)
                     label.Address = offset;
             }
+
+            if (offset > short.MaxValue)
+                throw new AssemblerException(string.Format("Programs must be less than 32767 words, currently using {0} words", offset));
 
             var assembled = new List<short>();
             foreach (var instruction in instructions)
@@ -112,7 +92,7 @@ namespace Assembler
             }
 
             var assembledArray = assembled.ToArray();
-            binary = new byte[assembled.Count * 2];
+            Binary = new byte[assembled.Count * 2];
             Buffer.BlockCopy(assembledArray, 0, Binary, 0, Binary.Length);
         }
 
