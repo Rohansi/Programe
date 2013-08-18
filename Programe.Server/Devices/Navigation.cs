@@ -33,14 +33,14 @@ namespace Programe.Server.Devices
         {
             switch (machine.Registers[0xA])
             {
-                case 0: // speed
+                case 0: // get speed
                     machine.Registers[0xA] = (short)(body.LinearVelocity.X * Constants.PixelsPerMeter);
                     machine.Registers[0xB] = (short)(body.LinearVelocity.Y * Constants.PixelsPerMeter);
                     break;
-                case 1: // angular speed
+                case 1: // get angular speed
                     machine.Registers[0xA] = Util.ToMachineRotation(body.AngularVelocity);
                     break;
-                case 2: // heading
+                case 2: // get heading
                     machine.Registers[0xA] = Util.ToMachineRotation(body.Rotation - ((float)Math.PI / 2));
                     break;
             }

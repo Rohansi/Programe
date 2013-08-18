@@ -78,16 +78,17 @@ namespace Programe.Server.Devices
                 byte distance = 255;
 
                 float min = 100;
-                var point = start + Util.LengthDir(dir, MaxDistance);
+                var point = start + Util.RadarLengthDir(dir, MaxDistance);
 
                 world.RayCast((f, p, n, fr) =>
                 {
+                    // TODO: everything should have UserData
                     if (fr > min || f.Body.UserData == null)
                         return 1;
 
                     min = fr;
 
-                    var data = (BodyData)f.Body.UserData;
+                    var data = (RadarData)f.Body.UserData;
                     type = data.Type;
                     distance = (byte)(fr * 255);
                     return fr;

@@ -23,6 +23,7 @@ namespace Programe.Server
 
             CreateBounds(20, 12);
 
+            // TODO: random asterboops
             var asteroid = CreateAsteroid();
             asteroid.Position = new Vector2(8, 2);
         }
@@ -57,7 +58,7 @@ namespace Programe.Server
                     if (body.UserData == null)
                         continue;
 
-                    var data = (BodyData)body.UserData;
+                    var data = (RadarData)body.UserData;
 
                     if (data.Data is Ship)
                     {
@@ -83,14 +84,14 @@ namespace Programe.Server
             }
         }
 
-        private static float x = 0f;
         public static void Spawn(Ship ship)
         {
             var body = CreateShip();
-            body.UserData = new BodyData(1, ship);
-            body.Position = new Vector2(2 + x, 8);
-            x += 3f;
-            body.Rotation = 2f;
+            body.UserData = new RadarData(1, ship);
+
+            // TODO: ship spawn location
+            body.Position = new Vector2(2, 6);
+            body.Rotation = 0f;
 
             ship.Spawn(world, body);
             ships.Add(ship);
@@ -142,6 +143,7 @@ namespace Programe.Server
             body.CreateFixture(rect1);
             body.CreateFixture(rect2);
 
+            // TODO: move to Ship.cs
             body.OnCollision += (a, b, contact) =>
             {
                 var hit = false;
@@ -177,7 +179,7 @@ namespace Programe.Server
             body.BodyType = BodyType.Dynamic;
             body.LinearDamping = 0.1f;
             body.AngularDamping = 0.1f;
-            body.UserData = new BodyData(2);
+            body.UserData = new RadarData(2);
 
             var shape = new CircleShape(1, 25);
             body.CreateFixture(shape);
@@ -188,7 +190,7 @@ namespace Programe.Server
         {
             var body = new Body(world);
             body.BodyType = BodyType.Static;
-            body.UserData = new BodyData(0);
+            body.UserData = new RadarData(0);
 
             var bottom = new PolygonShape(5);
             bottom.SetAsBox(width / 2, 0.1f, new Vector2(width / 2, height), 0);

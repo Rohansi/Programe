@@ -100,7 +100,7 @@ namespace Programe.Machine
                         instruction.Left.Set(result);
                         SetZero(result);
                         break;
-                    case Opcode.Mod:
+                    case Opcode.Rem:
                         result = (short)(instruction.Left.Get() % instruction.Right.Get());
                         instruction.Left.Set(result);
                         SetZero(result);
@@ -165,7 +165,7 @@ namespace Programe.Machine
                         var cmpValL = instruction.Left.Get();
                         var cmpValR = instruction.Right.Get();
 
-                        flags = Flags.Zero;
+                        flags = Flags.None;
                         if (cmpValL == 0)
                             flags |= Flags.Zero;
                         if (cmpValL == cmpValR)
@@ -221,6 +221,11 @@ namespace Programe.Machine
                         break;
                     case Opcode.Ivt:
                         ivt = instruction.Left.Get();
+                        break;
+                    case Opcode.Abs:
+                        result = Math.Abs(instruction.Left.Get());
+                        instruction.Left.Set(result);
+                        SetZero(result);
                         break;
                     default:
                         throw new VirtualMachineException(errorIP, "Bad opcode");

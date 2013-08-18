@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Programe.Machine;
 
 namespace Assembler
@@ -7,7 +8,7 @@ namespace Assembler
     public enum TokenType
     {
         EndOfFile, Number, String,
-        Word, Keyword, Label, Comma, OpenBracket, CloseBracket, Period, Plus
+        Word, Opcode, Register, Label, Comma, OpenBracket, CloseBracket, Plus
     }
 
     public struct Token
@@ -65,10 +66,21 @@ namespace Assembler
                     case BasicTokenType.Word:
                     {
                         Opcode opcode;
+                        Register register;
+
                         if (Enum.TryParse(tok.Value, true, out opcode) && opcode < Opcode.None)
-                            tokens.Add(new Token(TokenType.Keyword, tok.Value.ToLower(), tok.Line));
+                        {
+                            tokens.Add(new Token(TokenType.Opcode, tok.Value.ToLower(), tok.Line));
+                        }
+                        else if (Enum.TryParse(tok.Value, true, out register))
+                        {
+                            tokens.Add(new Token(TokenType.Register, tok.Value.ToLower(), tok.Line));
+                        }
                         else
+                        {
                             tokens.Add(new Token(TokenType.Word, tok.Value, tok.Line));
+                        }
+
                         break;
                     }
 
@@ -97,16 +109,17 @@ namespace Assembler
                             var last = tokens[tokens.Count - 1];
                             if (last.Type == TokenType.Word)
                             {
+                                var periodCount = last.Value.Count(c => c == '.');
+
+                                if (periodCount > 1)
+                                {
+                                    throw new AssemblerException(string.Format("Label with more than one period on line {0}", last.Line));
+                                }
+
                                 tokens.RemoveAt(tokens.Count - 1);
                                 tokens.Add(new Token(TokenType.Label, last.Value, last.Line));
                                 break;
                             }
-                        }
-
-                        if (tok.Value == ".")
-                        {
-                            tokens.Add(new Token(TokenType.Period, tok.Value, tok.Line));
-                            break;
                         }
 
                         if (tok.Value == "+")
@@ -115,7 +128,7 @@ namespace Assembler
                             break;
                         }
 
-                        throw new AssemblerException(string.Format("Unexpected delimiter '{0}'", tok.Value));
+                        throw new AssemblerException(string.Format("Unexpected delimiter '{0}' on line {1}", tok.Value, tok.Line));
                     }
 
                     case BasicTokenType.Number:
@@ -131,7 +144,7 @@ namespace Assembler
                     }
 
                     default:
-                        throw new AssemblerException(string.Format("Unhandled BasicToken {0}", tok.Type));
+                        throw new AssemblerException(string.Format("Unhandled BasicToken {0} on line {1}", tok.Type, tok.Line));
                 }
             }
 

@@ -27,17 +27,13 @@ namespace Programe.Server.Devices
         {
             switch (machine.Registers[0xA])
             {
-                case 0:
-                {
-                    Thruster = Util.Clamp(machine.Registers[0xB] / 100f, -1, 1);
+                case 0: // set thruster speed
+                    Thruster = Util.Clamp(machine.Registers[0xB] / 100f, -1, 1) * -1;
                     break;
-                }
 
-                case 1:
-                {
+                case 1: // set angular thrusters
                     AngularThruster = Util.Clamp(machine.Registers[0xB] / 100f, -1, 1);
                     break;
-                }
             }
         }
     }

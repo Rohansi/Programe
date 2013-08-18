@@ -17,7 +17,7 @@ Instructions
 02  SUB   DST, SRC    Subtract
 03  MUL   DST, SRC    Multiply
 04  DIV   DST, SRC    Divide
-05  MOD   DST, SRC    Modulo
+05  REM   DST, SRC    Remainder
 06  INC   DST         Increment
 07  DEC   DST         Decrement
 08  NOT   DST         Bitwise not
@@ -44,6 +44,7 @@ Instructions
 1D  INT   DST, SRC    Call interrupt
 1E  IRET  DST, SRC    Return from interrupt
 1F  IVT   DST         Set the location of the interrupt vector table
+20  ABS   DST         Absolute value
 
 All math instructions (including bitwise) change the zero flag based on the result (which will be stored in DST).
 

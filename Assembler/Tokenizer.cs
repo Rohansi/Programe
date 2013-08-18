@@ -14,7 +14,7 @@ namespace Assembler
     public class Tokenizer
     {
         private const char LineBreak = '\n';
-        private const string Delimiters = ":,[].+";
+        private const string Delimiters = ":,[]+";
 
         private readonly string source;
         private readonly List<BasicToken> tokens;
@@ -170,11 +170,11 @@ namespace Assembler
                     }
 
                     // Word
-                    if (char.IsLetter(source[pos]) || source[pos] == '_')
+                    if (char.IsLetter(source[pos]) || source[pos] == '_' || source[pos] == '.')
                     {
                         var value = "";
 
-                        while (pos < source.Length && (char.IsLetterOrDigit(source[pos]) || source[pos] == '_'))
+                        while (pos < source.Length && (char.IsLetterOrDigit(source[pos]) || source[pos] == '_' || source[pos] == '.'))
                         {
                             value += source[pos++];
                         }
@@ -220,7 +220,9 @@ namespace Assembler
                         short number;
                         try
                         {
-                            number = !hex ? short.Parse(value, CultureInfo.InvariantCulture) : Convert.ToInt16(value, 16);
+                            if (hex)
+                                value = Convert.ToInt16(value, 16).ToString("G");
+                            number = short.Parse(value, CultureInfo.InvariantCulture);
                         }
                         catch (Exception e)
                         {
@@ -246,14 +248,6 @@ namespace Assembler
                 }
                 throw;
             }
-        }
-
-        private bool IsNext(string str)
-        {
-            if (pos + str.Length > source.Length)
-                return false;
-
-            return source.Substring(pos, str.Length) == str;
         }
 
         private void AddToken(BasicTokenType type, string value = "")

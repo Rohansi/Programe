@@ -4,8 +4,6 @@ using System.IO;
 
 namespace Assembler
 {
-    // TODO: move stuff like Opcode and OperandCounts to Programe.Machine
-
     class Program
     {
         static void Main(string[] args)
@@ -52,7 +50,7 @@ namespace Assembler
                 else
                 {
                     File.WriteAllBytes(output, a.Binary);
-                    Console.WriteLine("Assembled to {0} bytes", a.Binary.Length);
+                    Console.WriteLine("Assembled to {0} words", a.Binary.Length / 2);
                 }
             }
             catch (AssemblerException e)

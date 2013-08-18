@@ -11,6 +11,7 @@ namespace Assembler
         private List<AssemblerInstruction> instructions;
         private Dictionary<string, Label> labels;
         private byte[] binary;
+        private string parentLabel;
 
         public byte[] Binary
         {
@@ -118,18 +119,35 @@ namespace Assembler
         private void Parse()
         {
             var t = tokens[pos];
-
             while (t.Type != TokenType.EndOfFile)
             {
                 if (t.Type == TokenType.Label)
                 {
-                    if (labels.ContainsKey(t.Value))
-                        throw new AssemblerException(string.Format("Duplicate label '{0}' on line {1}.", t.Value, t.Line));
+                    var prefix = "";
+                    
+                    if (t.Value.StartsWith("."))
+                    {
+                        if (parentLabel == null)
+                            throw new AssemblerException(string.Format("Local label with no parent on line {0}", t.Line));
 
-                    labels.Add(t.Value, new Label(t.Value, instructions.Count));
+                        prefix = parentLabel;
+                    }
+                    else
+                    {
+                        if (t.Value.Contains("."))
+                            throw new AssemblerException(string.Format("Period used in global label declaration on line {0}", t.Line));
+
+                        parentLabel = t.Value;
+                    }
+
+                    var label = prefix + t.Value;
+                    if (labels.ContainsKey(label))
+                        throw new AssemblerException(string.Format("Duplicate label '{0}' on line {1}.", label, t.Line));
+
+                    labels.Add(label, new Label(label, instructions.Count));
                     pos++;
                 }
-                else if (t.Type == TokenType.Keyword)
+                else if (t.Type == TokenType.Opcode)
                 {
                     instructions.Add(ParseInstruction());
                 }
@@ -141,8 +159,7 @@ namespace Assembler
                     while (t.Type == TokenType.Number)
                     {
                         short value;
-                        if (!short.TryParse(t.Value, out value))
-                            throw new AssemblerException(string.Format("Value out of range (-32768 to 32767) on line {0}.", t.Line));
+                        short.TryParse(t.Value, out value);
 
                         data.Add(value);
 
@@ -207,36 +224,36 @@ namespace Assembler
                 var offset = false;
                 var offsetRegister = Register.R0;
 
-                if (tokens[pos].Type == TokenType.Word && tokens[pos + 1].Type == TokenType.Plus)
+                if (tokens[pos].Type == TokenType.Register && tokens[pos + 1].Type == TokenType.Plus)
                 {
-                    if (!Enum.TryParse(tokens[pos].Value, true, out offsetRegister))
-                    {
-                        throw new AssemblerException(string.Format("Expected register on line {0}", tokens[pos].Line));
-                    }
-                    else
-                    {
-                        if (!pointer)
-                            throw new AssemblerException(string.Format("Offset should only be used for pointers on line {0}", tokens[pos].Line));
-                        if (offsetRegister > Register.RF)
-                            throw new AssemblerException(string.Format("IP or SP used in offset on line {0}", tokens[pos].Line));
-                        offset = true;
-                        pos += 2;
-                    }
+                    Enum.TryParse(tokens[pos].Value, true, out offsetRegister);
+
+                    if (!pointer)
+                        throw new AssemblerException(string.Format("Offset should only be used for pointers on line {0}", tokens[pos].Line));
+
+                    if (offsetRegister > Register.RF)
+                        throw new AssemblerException(string.Format("IP or SP used in offset on line {0}", tokens[pos].Line));
+
+                    offset = true;
+                    pos += 2;
                 }
 
                 t = tokens[pos++];
 
-                if (t.Type == TokenType.Word)
+                if (t.Type == TokenType.Register)
                 {
                     Register register;
-                    if (Enum.TryParse(t.Value, true, out register))
-                    {
-                        return Operand.FromRegister(register, pointer, offset, offsetRegister);
-                    }
-                    else
-                    {
-                        return Operand.FromLabel(t.Value, t.Line, pointer, offset, offsetRegister);
-                    }
+                    Enum.TryParse(t.Value, true, out register);
+                    return Operand.FromRegister(register, pointer, offset, offsetRegister);
+                }
+
+                if (t.Type == TokenType.Word)
+                {
+                    var prefix = "";
+                    if (t.Value.StartsWith("."))
+                        prefix = parentLabel;
+
+                    return Operand.FromLabel(prefix + t.Value, t.Line, pointer, offset, offsetRegister);
                 }
 
                 if (t.Type == TokenType.Number)
@@ -244,7 +261,7 @@ namespace Assembler
                     return Operand.FromNumber(short.Parse(t.Value), pointer, offset, offsetRegister);
                 }
 
-                throw new AssemblerException(string.Format("Expected operand on line {0}.", t.Line));
+                throw new AssemblerException(string.Format("Expected operand on line {0}", t.Line));
             }
             finally
             {

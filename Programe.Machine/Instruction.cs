@@ -6,9 +6,9 @@ namespace Programe.Machine
 {
     public enum Opcode : byte
     {
-        Mov, Add, Sub, Mul, Div, Mod, Inc, Dec, Not, And, Or,
+        Mov, Add, Sub, Mul, Div, Rem, Inc, Dec, Not, And, Or,
         Xor, Shl, Shr, Push, Pop, Jmp, Call, Ret, Cmp, Jz, Jnz,
-        Je, Jne, Ja, Jae, Jb, Jbe, Rand, Int, Iret, Ivt, None
+        Je, Jne, Ja, Jae, Jb, Jbe, Rand, Int, Iret, Ivt, Abs, None
     }
 
     public class Instruction
@@ -56,12 +56,21 @@ namespace Programe.Machine
         public override string ToString()
         {
             var sb = new StringBuilder();
+            var operands = OperandCounts[Opcode];
 
             sb.Append(Opcode.ToString().ToUpper());
-            sb.Append(' ');
-            sb.Append(Left);
-            sb.Append(", ");
-            sb.Append(Right);
+
+            if (operands >= 1)
+            {
+                sb.Append(' ');
+                sb.Append(Left);
+            }
+
+            if (operands >= 2)
+            {
+                sb.Append(", ");
+                sb.Append(Right);
+            }
 
             return sb.ToString();
         }
@@ -73,7 +82,7 @@ namespace Programe.Machine
             { Opcode.Sub,     2 },
             { Opcode.Mul,     2 },
             { Opcode.Div,     2 },
-            { Opcode.Mod,     2 },
+            { Opcode.Rem,     2 },
             { Opcode.Inc,     1 },
             { Opcode.Dec,     1 },
             { Opcode.Not,     1 },
@@ -100,6 +109,7 @@ namespace Programe.Machine
             { Opcode.Int,     1 },
             { Opcode.Iret,    0 },
             { Opcode.Ivt,     1 },
+            { Opcode.Abs,     1 }
         };
     }
 }

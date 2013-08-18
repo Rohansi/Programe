@@ -65,13 +65,13 @@ namespace Programe.Server
             }
             catch (VirtualMachineException e)
             {
-                // TODO
+                // TODO: save error message for the ship's owner
                 Dead = true;
                 return;
             }
 
-            Body.ApplyForce(Body.GetWorldVector(new Vector2(0.0f, engines.Thruster * 30f)));
-            Body.ApplyTorque(engines.AngularThruster * 7.5f);
+            Body.ApplyForce(Body.GetWorldVector(new Vector2(0.0f, engines.Thruster * 25f)));
+            Body.ApplyTorque(engines.AngularThruster * 5f);
         }
     }
 }

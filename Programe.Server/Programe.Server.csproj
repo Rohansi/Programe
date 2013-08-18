@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account.cs" />
-    <Compile Include="BodyData.cs" />
+    <Compile Include="RadarData.cs" />
     <Compile Include="Devices\Engines.cs" />
     <Compile Include="Devices\Navigation.cs" />
     <Compile Include="Devices\Radar.cs" />
