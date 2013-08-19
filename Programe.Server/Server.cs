@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Lidgren.Network;
 using Programe.Network;
+using Programe.Server.NetObjects;
 
 namespace Programe.Server
 {
-    class Server
+    public class Server
     {
         private static NetServer server;
 
         public static void Start()
         {
+            NetObject.RegisterNetObject(typeof(NetShip));
+            NetObject.RegisterNetObject(typeof(NetAsteroid));
+
             var config = new NetPeerConfiguration(Constants.ApplicationIdentifier);
             config.Port = Constants.Port;
 
@@ -41,6 +45,7 @@ namespace Programe.Server
                         break;
 
                     case NetIncomingMessageType.Data:
+                        Packet.Handle(msg);
                         break;
 
                     default:
@@ -52,13 +57,10 @@ namespace Programe.Server
             }
         }
 
-        public static NetOutgoingMessage CreateMessage()
+        public static void Broadcast(Packet packet, NetDeliveryMethod method = NetDeliveryMethod.ReliableOrdered, int sequenceChannel = 0)
         {
-            return server.CreateMessage();
-        }
-
-        public static void Broadcast(NetOutgoingMessage message, NetDeliveryMethod method, int sequenceChannel)
-        {
+            var message = server.CreateMessage();
+            Packet.WriteToMessage(packet, message);
             server.SendToAll(message, null, method, sequenceChannel);
         }
     }

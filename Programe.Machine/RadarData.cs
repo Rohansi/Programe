@@ -2,6 +2,11 @@
 
 namespace Programe.Machine
 {
+    public enum RadarType : byte
+    {
+        Wall, Ship, Asteroid
+    }
+    
     /// <summary>
     /// Stores information for the radar.
     /// </summary>
@@ -10,17 +15,17 @@ namespace Programe.Machine
         /// <summary>
         /// Type to report on the radar
         /// </summary>
-        public readonly byte Type;
+        public readonly RadarType Type;
 
         /// <summary>
         /// Additional user data (Ship, etc)
         /// </summary>
-        public readonly object Data;
+        public readonly object UserData;
 
-        public RadarData(byte type, object data = null)
+        public RadarData(RadarType type, object userData = null)
         {
             Type = type;
-            Data = data;
+            UserData = userData;
         }
     }
 }

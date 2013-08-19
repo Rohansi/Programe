@@ -7,10 +7,12 @@ using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Programe.Machine;
 using Programe.Network;
+using Programe.Network.Packets;
+using Programe.Server.NetObjects;
 
 namespace Programe.Server
 {
-    static class Game
+    public static class Game
     {
         private static World world;
         private static List<Ship> ships;
@@ -24,7 +26,7 @@ namespace Programe.Server
 
             CreateBounds(20, 12);
 
-            // TODO: random asterboops
+            // TODO: random asteroids
             var asteroid = CreateAsteroid();
             asteroid.Position = new Vector2(8, 2);
         }
@@ -38,7 +40,7 @@ namespace Programe.Server
                 ships.Remove(ship);
             }
 
-            // spawn if theres room
+            //TODO: spawn if theres room
 
             foreach (var ship in ships)
             {
@@ -47,40 +49,23 @@ namespace Programe.Server
 
             world.Step((float)Constants.SecondsPerUpdate);
 
-            // send state
             timer++;
             if (timer >= 2)
             {
-                var message = Server.CreateMessage();
-                message.Write((byte)10);
+                var scene = new Scene();
 
                 foreach (var body in world.BodyList)
                 {
-                    if (body.UserData == null)
-                        continue;
-
                     var data = (RadarData)body.UserData;
 
-                    if (data.Data is Ship)
-                    {
-                        message.Write((byte)0);
-                        message.Write(body.BodyId);
-                        message.Write(body.Position.X);
-                        message.Write(body.Position.Y);
-                        message.Write(body.Rotation);
-                    }
+                    if (data.UserData == null)
+                        continue;
 
-                    if (data.Type == 2)
-                    {
-                        message.Write((byte)1);
-                        message.Write(body.BodyId);
-                        message.Write(body.Position.X);
-                        message.Write(body.Position.Y);
-                        message.Write(body.Rotation);
-                    }
+                    var netObj = (NetObject)data.UserData;
+                    scene.Objects.Add(netObj);
                 }
 
-                Server.Broadcast(message, NetDeliveryMethod.UnreliableSequenced, 0);
+                Server.Broadcast(scene, NetDeliveryMethod.UnreliableSequenced, 0);
                 timer = 0;
             }
         }
@@ -88,7 +73,7 @@ namespace Programe.Server
         public static void Spawn(Ship ship)
         {
             var body = CreateShip();
-            body.UserData = new RadarData(1, ship);
+            body.UserData = new RadarData(RadarType.Ship, new NetShip(ship));
 
             // TODO: ship spawn location
             body.Position = new Vector2(2, 6);
@@ -152,11 +137,11 @@ namespace Programe.Server
         {
             var body = new Body(world);
             body.BodyType = BodyType.Dynamic;
-            body.LinearDamping = 0.1f;
-            body.AngularDamping = 0.1f;
-            body.UserData = new RadarData(2);
+            body.LinearDamping = 1f;
+            body.AngularDamping = 1f;
+            body.UserData = new RadarData(RadarType.Asteroid, new NetAsteroid(body));
 
-            var shape = new CircleShape(1, 25);
+            var shape = new CircleShape(1, 10);
             body.CreateFixture(shape);
             return body;
         }
@@ -165,7 +150,7 @@ namespace Programe.Server
         {
             var body = new Body(world);
             body.BodyType = BodyType.Static;
-            body.UserData = new RadarData(0);
+            body.UserData = new RadarData(RadarType.Wall);
 
             var bottom = new PolygonShape(5);
             bottom.SetAsBox(width / 2, 0.1f, new Vector2(width / 2, height), 0);

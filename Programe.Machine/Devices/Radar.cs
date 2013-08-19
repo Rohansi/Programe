@@ -88,7 +88,7 @@ namespace Programe.Machine.Devices
                     min = fr;
 
                     var data = (RadarData)f.Body.UserData;
-                    type = data.Type;
+                    type = (byte)data.Type;
                     distance = (byte)(fr * 255);
                     return fr;
                 }, start, point);

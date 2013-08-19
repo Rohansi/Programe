@@ -7,6 +7,12 @@ namespace Assembler
     {
         static void Main(string[] args)
         {
+            if (!BitConverter.IsLittleEndian)
+            {
+                Console.WriteLine("Big endian CPUs are currently not supported.");
+                return;
+            }
+
             if (args.Length < 2)
             {
                 Console.WriteLine("Usage:");

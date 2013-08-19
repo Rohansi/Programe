@@ -202,10 +202,10 @@ namespace PhysicsTest
         {
             var body = new Body(world);
             body.BodyType = BodyType.Dynamic;
-            body.LinearDamping = 0.1f;
-            body.AngularDamping = 0.1f;
+            body.LinearDamping = 1f;
+            body.AngularDamping = 1f;
 
-            var shape = new FarseerCircleShape(1, 25);
+            var shape = new FarseerCircleShape(1, 10);
             body.CreateFixture(shape);
             return body;
         }

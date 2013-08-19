@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Lidgren.Network;
+using Programe.NetObjects;
 using Programe.Network;
+using Programe.Network.Packets;
 
 namespace Programe
 {
@@ -11,10 +14,15 @@ namespace Programe
 
         public static string Server = "127.0.0.1";
         public static bool Connected { get; private set; }
-        public static List<NetworkObject> Objects;
+        public static List<DrawableNetObject> Objects;
          
         public static void Start()
         {
+            Packet.RegisterHandler(PacketId.Scene, HandleScene);
+
+            NetObject.RegisterNetObject(typeof(NetShip));
+            NetObject.RegisterNetObject(typeof(NetAsteroid));
+
             var config = new NetPeerConfiguration(Constants.ApplicationIdentifier);
             client = new NetClient(config);
             client.Start();
@@ -54,7 +62,7 @@ namespace Programe
                         }
                         break;
                     case NetIncomingMessageType.Data:
-                        HandleMessage(msg);
+                        Packet.Handle(msg);
                         break;
 
                     default:
@@ -81,25 +89,10 @@ namespace Programe
             client.Connect(Server, Constants.Port);
         }
 
-        private static void HandleMessage(NetIncomingMessage message)
+        private static void HandleScene(Packet packet)
         {
-            var id = message.ReadByte();
-            switch (id)
-            {
-                case 10:
-                {
-                    var newObjects = new List<NetworkObject>();
-
-                    while (message.Position < message.LengthBits)
-                    {
-                        newObjects.Add(new NetworkObject(message));
-                    }
-
-                    Console.WriteLine("DATA! " + DateTime.Now.Millisecond + " " + newObjects.Count);
-                    Objects = newObjects;
-                    break;
-                }
-            }
+            var scene = (Scene)packet;
+            Objects = scene.Objects.OfType<DrawableNetObject>().ToList();
         }
     }
 }

@@ -1,4 +1,5 @@
-[ ] - Fix game/network code structure (it currently has none)
+[x] - Fix network code structure
+[ ] - Fix game code structure
 [ ] - Reduce precision of streamed data, nothing needs 4 bytes
 [ ] - Move GUI to into Programe.Gui
 [ ] - Offline Debugger

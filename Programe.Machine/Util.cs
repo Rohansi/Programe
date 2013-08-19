@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Programe.Machine.Devices;
 
 namespace Programe.Machine
 {
-    public static class Util
+    internal static class Util
     {
         public static float Clamp(float value, float min, float max)
         {

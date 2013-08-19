@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="DrawableNetObject.cs" />
     <Compile Include="GameWindow.cs" />
     <Compile Include="Gui\Container.cs" />
     <Compile Include="Gui\GuiSystem.cs" />
@@ -72,7 +73,8 @@
     <Compile Include="Gui\Widgets\TextBox.cs" />
     <Compile Include="Gui\Widgets\Window.cs" />
     <Compile Include="Interface.cs" />
-    <Compile Include="NetworkObject.cs" />
+    <Compile Include="NetObjects\NetAsteroid.cs" />
+    <Compile Include="NetObjects\NetShip.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -104,6 +106,7 @@
       <Name>Programe.Network</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

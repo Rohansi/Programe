@@ -7,7 +7,7 @@ using Programe.Machine.Devices;
 
 namespace Programe.Server
 {
-    class Ship
+    public class Ship
     {
         public readonly string Name;
         public bool Dead { get; private set; }
