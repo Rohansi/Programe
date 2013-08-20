@@ -2,6 +2,7 @@
 [ ] - Fix game code structure
 [ ] - Reduce precision of streamed data, nothing needs 4 bytes
 [ ] - Move GUI to into Programe.Gui
+[ ] - Clean up Interface.cs
 [ ] - Offline Debugger
    [ ] - Machine state inspection, breakpoints
    [ ] - Player vs. AI

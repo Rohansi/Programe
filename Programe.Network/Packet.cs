@@ -5,7 +5,7 @@ namespace Programe.Network
 {
     public enum PacketId : byte
     {
-        Scene
+        Scene, Auth, AuthResponse, 
     }
 
     public abstract partial class Packet

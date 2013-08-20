@@ -19,7 +19,23 @@ namespace Programe.Gui.Widgets
 
         public override void Draw(TextRenderer renderer)
         {
-            renderer.DrawText(0, 0, Caption, Character.Create(foreground: 16));
+            var x = 0;
+            var y = 0;
+
+            foreach (var c in Caption)
+            {
+                renderer.Set(x, y, Character.Create(c, 16));
+
+                x++;
+                if (x >= Width)
+                {
+                    x = 0;
+                    y++;
+                }
+
+                if (y >= Height)
+                    break;
+            }
         }
     }
 }

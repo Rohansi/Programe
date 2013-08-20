@@ -8,6 +8,9 @@ namespace Programe.Server
 {
     public class Account
     {
+        private const string InvalidUsernameMessage = "Usernames must be 3 to 16 characters long and may only contain letters, digits and whitespace.";
+        private const string InvalidPasswordMessage = "Passwords must be at least 6 characters long.";
+
         public string Username;
         public byte[] Password;
         public byte[] Salt;
@@ -17,30 +20,30 @@ namespace Programe.Server
         public void Save()
         {
             if (!ValidUsername(Username))
-                throw new Exception("Invalid username");
+                throw new Exception(InvalidUsernameMessage);
 
             var file = AccountFilename(Username);
             File.WriteAllText(file, JsonConvert.SerializeObject(this));
         }
 
-        public static Account Login(string username, string password, out string error)
+        public static Account Login(string username, string password, out string message)
         {
             if (!ValidUsername(username))
             {
-                error = "Invalid username";
+                message = InvalidUsernameMessage;
                 return null;
             }
 
             if (password.Length < 6)
             {
-                error = "Password too short";
+                message = InvalidPasswordMessage;
                 return null;
             }
 
             var file = AccountFilename(username);
             if (!File.Exists(file))
             {
-                error = "Account does not exist";
+                message = string.Format("Account '{0}' does not exist.", username);
                 return null;
             }
 
@@ -49,33 +52,33 @@ namespace Programe.Server
 
             if (!hashedPassword.SequenceEqual(account.Password))
             {
-                error = "Incorrect password";
+                message = "Incorrect username or password.";
                 return null;
             }
 
-            error = null;
+            message = string.Format("Logged in as {0}.", account.Username);
             return account;
         }
 
-        public static bool Register(string username, string password, out string error)
+        public static Account Register(string username, string password, out string message)
         {
             if (!ValidUsername(username))
             {
-                error = "Invalid username";
-                return false;
+                message = InvalidUsernameMessage;
+                return null;
             }
 
             if (password.Length < 6)
             {
-                error = "Password too short";
-                return false;
+                message = InvalidPasswordMessage;
+                return null;
             }
 
             var file = AccountFilename(username);
             if (File.Exists(file))
             {
-                error = "Account already exists";
-                return false;
+                message = "An account with that username already exists.";
+                return null;
             }
 
             var salt = GenerateSalt();
@@ -87,13 +90,13 @@ namespace Programe.Server
             account.Salt = salt;
             account.Save();
 
-            error = null;
-            return true;
+            message = "Your account has been created and you have been automatically logged in.";
+            return account;
         }
 
         private static bool ValidUsername(string username)
         {
-            return !(username.Length < 3 || username.Length > 10 || !username.All(c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c)));
+            return !(username.Length < 3 || username.Length > 16 || !username.All(c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c)));
         }
 
         private static string AccountFilename(string username)

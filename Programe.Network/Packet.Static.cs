@@ -8,7 +8,7 @@ namespace Programe.Network
 {
     public abstract partial class Packet
     {
-        public delegate void PacketHandler(Packet packet);
+        public delegate void PacketHandler(NetConnection connection, Packet packet);
 
         private static Dictionary<PacketId, Type> packetTypes;
         private static Dictionary<PacketId, PacketHandler> packetHandlers;
@@ -43,7 +43,7 @@ namespace Programe.Network
         public static void Handle(NetIncomingMessage message)
         {
             var packet = ReadFromMessage(message);
-            packetHandlers[packet.Id](packet);
+            packetHandlers[packet.Id](message.SenderConnection, packet);
         }
 
         private static Packet ReadFromMessage(NetIncomingMessage message)

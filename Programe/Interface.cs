@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Programe.Gui;
 using Programe.Gui.Widgets;
 
@@ -10,16 +8,17 @@ namespace Programe
     {
         private static GuiSystem gui;
 
+        private static Window messageWindow;
+        private static Label messageWindowLabel;
+
         private static Window loginWindow;
         private static TextBox loginUsername;
         private static TextBox loginPassword;
-        private static Label loginStatus;
 
         private static Window registerWindow;
         private static TextBox registerUsername;
         private static TextBox registerPassword1;
         private static TextBox registerPassword2;
-        private static Label registerStatus;
 
         private static ListBox statusWindowList;
         
@@ -32,6 +31,20 @@ namespace Programe
             desktop.Top = 1;
             gui.Add(desktop);
 
+            #region Message Window
+            messageWindow = new Window(0, 0, 60, 8, "");
+            messageWindow.Visible = false;
+            desktop.Add(messageWindow);
+
+            messageWindowLabel = new Label(1, 1, 56, 2, "");
+            messageWindow.Add(messageWindowLabel);
+
+            var messageWindowButton = new Button(52, 4, 5, "OK");
+            messageWindowButton.Clicked += () => messageWindow.Visible = false;
+            messageWindow.Add(messageWindowButton);
+            #endregion
+
+            #region Status Window
             var statusWindow = new Window(10, 10, 70, 20, "Status Messages");
             statusWindow.Visible = false;
             desktop.Add(statusWindow);
@@ -39,6 +52,7 @@ namespace Programe
             statusWindowList = new ListBox(1, 0, 66, 18);
             statusWindowList.SelectEnabled = false;
             statusWindow.Add(statusWindowList);
+            #endregion
 
             #region Login Window
             loginWindow = new Window(10, 10, 35, 11, "Login");
@@ -55,14 +69,19 @@ namespace Programe
             loginWindow.Add(loginPasswordLabel);
 
             loginPassword = new TextBox(1, 5, 31);
-            loginPassword.PasswordCharacter = (char)3;
+            loginPassword.PasswordCharacter = '*';
             loginWindow.Add(loginPassword);
 
             var loginButton = new Button(24, 7, 8, "Login");
             loginWindow.Add(loginButton);
 
-            loginStatus = new Label(1, 7, 22, 1, "Not connected");
-            loginWindow.Add(loginStatus);
+            loginButton.Clicked += () =>
+            {
+                if (Offline())
+                    return;
+
+                Client.Login(loginUsername.Value, loginPassword.Value);
+            };
             #endregion
 
             #region Register Window
@@ -80,21 +99,32 @@ namespace Programe
             registerWindow.Add(registerPassword1Label);
 
             registerPassword1 = new TextBox(1, 5, 31);
-            registerPassword1.PasswordCharacter = (char)3;
+            registerPassword1.PasswordCharacter = '*';
             registerWindow.Add(registerPassword1);
 
             var registerPassword2Label = new Label(1, 7, 31, 1, "Confirm Password:");
             registerWindow.Add(registerPassword2Label);
 
             registerPassword2 = new TextBox(1, 8, 31);
-            registerPassword2.PasswordCharacter = (char)3;
+            registerPassword2.PasswordCharacter = '*';
             registerWindow.Add(registerPassword2);
 
             var registerButton = new Button(21, 10, 11, "Register");
             registerWindow.Add(registerButton);
 
-            registerStatus = new Label(1, 10, 19, 1, "Not connected");
-            registerWindow.Add(registerStatus);
+            registerButton.Clicked += () =>
+            {
+                if (Offline())
+                    return;
+
+                if (registerPassword1.Value != registerPassword2.Value)
+                {
+                    ShowMessage("Register", "The provided passwords do not match.");
+                    return;
+                }
+
+                Client.Register(registerUsername.Value, registerPassword1.Value);
+            };
             #endregion
 
             #region Menu
@@ -104,6 +134,9 @@ namespace Programe
             var login = new MenuItem("Login");
             login.Clicked += () =>
             {
+                if (Offline())
+                    return;
+
                 ResetAccountWindows();
                 loginWindow.Visible = true;
                 loginWindow.Focus();
@@ -112,6 +145,9 @@ namespace Programe
             var register = new MenuItem("Register");
             register.Clicked += () =>
             {
+                if (Offline())
+                    return;
+
                 ResetAccountWindows();
                 registerWindow.Visible = true;
                 registerWindow.Focus();
@@ -131,21 +167,28 @@ namespace Programe
 
             view.Items.Add(status);
             menu.Items.Add(view);
-            #endregion
-
             gui.Add(menu);
+            #endregion
         }
 
         public static void Connected()
         {
-            loginStatus.Caption = "";
-            registerStatus.Caption = "";
+            ResetAccountWindows();
         }
 
         public static void Disconnected()
         {
-            loginStatus.Caption = "Not connected";
-            registerStatus.Caption = "Not connected";
+            ResetAccountWindows();
+        }
+
+        public static void ShowMessage(string caption, string message)
+        {
+            messageWindow.Caption = caption;
+            messageWindowLabel.Caption = message;
+
+            messageWindow.Focus();
+            CenterWindow(messageWindow);
+            messageWindow.Visible = true;
         }
 
         public static void AddStatusMessage(string message)
@@ -155,7 +198,7 @@ namespace Programe
             statusWindowList.Items.Add(new ListBoxItem(message));
         }
 
-        private static void ResetAccountWindows()
+        public static void ResetAccountWindows()
         {
             loginUsername.Value = "";
             loginPassword.Value = "";
@@ -175,6 +218,23 @@ namespace Programe
             var halfHeight = (int)gui.SurfaceHeight / 2;
             window.Left = (int)(halfWidth - (window.Width / 2));
             window.Top = (int)(halfHeight - (window.Height / 2));
+        }
+
+        private static bool Offline()
+        {
+            if (!Client.Connected)
+            {
+                ShowMessage("", "The game is not connected to a server.");
+                return true;
+            }
+
+            if (Client.LoggedIn)
+            {
+                ShowMessage("", "You are already logged in.");
+                return true;
+            }
+
+            return false;
         }
     }
 }
