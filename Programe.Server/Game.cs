@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FarseerPhysics.Collision;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
 using Lidgren.Network;
@@ -14,33 +15,48 @@ namespace Programe.Server
 {
     public static class Game
     {
+        private static Random random = new Random();
+
+        private static float width;
+        private static float height;
+        private static int sceneTimer;
         private static World world;
         private static List<Ship> ships;
-        private static int timer;
+        private static Queue<Ship> spawnQueue; 
 
-        public static void Start()
+        public static void Start(float w, float h)
         {
+            width = w;
+            height = h;
+
             // TODO: investivate fix for farseer quadreee: http://farseerphysics.codeplex.com/workitem/30555
             world = new World(new Vector2(0, 0));
             ships = new List<Ship>();
+            spawnQueue = new Queue<Ship>();
 
-            CreateBounds(20, 12);
+            CreateBounds(width, height);
 
-            // TODO: random asteroids
-            var asteroid = CreateAsteroid();
-            asteroid.Position = new Vector2(8, 2);
+            var asteroidCount = (width * height) / 100;
+            for (var i = 0; i < (int)asteroidCount; i++)
+            {
+                var asteroid = CreateAsteroid();
+                asteroid.Position = FindOpenSpace(new Vector2(1.5f, 1.5f));
+                asteroid.Rotation = (float)(random.NextDouble() * (Math.PI * 2));
+            }
         }
 
         public static void Update()
         {
-            // remove dead ships
             foreach (var ship in ships.Where(s => s.Dead).ToList())
             {
                 world.RemoveBody(ship.Body);
                 ships.Remove(ship);
             }
 
-            //TODO: spawn if theres room
+            while (spawnQueue.Count > 0)
+            {
+                Spawn();
+            }
 
             foreach (var ship in ships)
             {
@@ -49,8 +65,8 @@ namespace Programe.Server
 
             world.Step((float)Constants.SecondsPerUpdate);
 
-            timer++;
-            if (timer >= 2)
+            sceneTimer++;
+            if (sceneTimer >= 3)
             {
                 var scene = new Scene();
 
@@ -66,21 +82,52 @@ namespace Programe.Server
                 }
 
                 Server.Broadcast(scene, NetDeliveryMethod.UnreliableSequenced, 0);
-                timer = 0;
+                sceneTimer = 0;
             }
         }
 
-        public static void Spawn(Ship ship)
+        public static void Queue(Ship ship)
         {
-            var body = CreateShip();
-            body.UserData = new RadarData(RadarType.Ship, new NetShip(ship));
+            lock (spawnQueue)
+            {
+                spawnQueue.Enqueue(ship);
+            }
+        }
 
-            // TODO: ship spawn location
-            body.Position = new Vector2(2, 6);
-            body.Rotation = 0f;
+        private static void Spawn()
+        {
+            lock (spawnQueue)
+            {
+                var ship = spawnQueue.Dequeue();
+                var body = CreateShip();
+                body.UserData = new RadarData(RadarType.Ship, new NetShip(ship));
 
-            ship.Spawn(world, body);
-            ships.Add(ship);
+                body.Position = FindOpenSpace(new Vector2(2.5f, 2.5f));
+                body.Rotation = (float)(random.NextDouble() * (Math.PI * 2));
+
+                ship.Spawn(world, body);
+                ships.Add(ship);
+            }
+        }
+
+        private static Vector2 FindOpenSpace(Vector2 size)
+        {
+            Vector2 position;
+            bool empty;
+            do
+            {
+                position = new Vector2((float)random.NextDouble() * width, (float)random.NextDouble() * height);
+                empty = true;
+
+                var aabb = new AABB(position, size.X, size.Y);
+                world.QueryAABB(f =>
+                {
+                    empty = false;
+                    return true;
+                }, ref aabb);
+            } while (!empty); // TODO: don't loop forever if no space
+
+            return position;
         }
 
         #region Physics Objects

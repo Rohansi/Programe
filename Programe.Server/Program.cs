@@ -14,12 +14,12 @@ namespace Programe.Server
             var shorts = new short[bytes.Length / 2];
             Buffer.BlockCopy(bytes, 0, shorts, 0, bytes.Length);
 
-            Game.Start();
+            Game.Start(17.5f, 9.375f);
             Server.Start();
 
-            for (var i = 0; i < 8; i++)
+            for (var i = 0; i < 4; i++)
             {
-                Game.Spawn(new Ship(i.ToString("G"), shorts));
+                Game.Queue(new Ship(i.ToString("G"), shorts));
             }
             
             var watch = Stopwatch.StartNew();

@@ -24,16 +24,16 @@ namespace Programe.NetObjects
 
         protected override void Read(NetIncomingMessage message)
         {
-            message.ReadString();
             x = message.ReadFloat();
             y = message.ReadFloat();
-            rotation = message.ReadFloat();
+            rotation = ((float)message.ReadUInt16()) / ushort.MaxValue;
+            rotation *= 360f;
         }
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-            sprite.Position = new Vector2f(x * Constants.PixelsPerMeter, y * Constants.PixelsPerMeter);
-            sprite.Rotation = rotation * (180f / (float)Math.PI);
+            sprite.Position = new Vector2f(x, y);
+            sprite.Rotation = rotation;
             target.Draw(sprite);
         }
 

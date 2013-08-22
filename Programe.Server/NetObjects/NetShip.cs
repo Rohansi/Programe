@@ -22,10 +22,16 @@ namespace Programe.Server.NetObjects
 
         protected override void Write(NetOutgoingMessage message)
         {
-            message.Write(ship.Name);
-            message.Write(ship.Body.Position.X);
-            message.Write(ship.Body.Position.Y);
-            message.Write(ship.Body.Rotation);
+            message.Write(ship.Body.Position.X * Constants.PixelsPerMeter);
+            message.Write(ship.Body.Position.Y * Constants.PixelsPerMeter);
+
+            const float maxRadians = (float)Math.PI * 2;
+            var rotation = ship.Body.Rotation % maxRadians;
+            if (rotation < 0)
+                rotation += maxRadians;
+            rotation /= maxRadians;
+
+            message.Write((ushort)(rotation * ushort.MaxValue));
         }
 
         protected override void Read(NetIncomingMessage message)
