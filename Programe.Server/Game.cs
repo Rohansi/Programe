@@ -15,14 +15,15 @@ namespace Programe.Server
 {
     public static class Game
     {
-        private static Random random = new Random();
+        private static readonly Random Random = new Random();
+
+        public static ShipQueue SpawnQueue; 
 
         private static float width;
         private static float height;
         private static int sceneTimer;
         private static World world;
         private static List<Ship> ships;
-        private static Queue<Ship> spawnQueue; 
 
         public static void Start(float w, float h)
         {
@@ -32,7 +33,7 @@ namespace Programe.Server
             // TODO: investivate fix for farseer quadreee: http://farseerphysics.codeplex.com/workitem/30555
             world = new World(new Vector2(0, 0));
             ships = new List<Ship>();
-            spawnQueue = new Queue<Ship>();
+            SpawnQueue = new ShipQueue(32);
 
             CreateBounds(width, height);
 
@@ -41,7 +42,7 @@ namespace Programe.Server
             {
                 var asteroid = CreateAsteroid();
                 asteroid.Position = FindOpenSpace(new Vector2(1.5f, 1.5f));
-                asteroid.Rotation = (float)(random.NextDouble() * (Math.PI * 2));
+                asteroid.Rotation = (float)(Random.NextDouble() * (Math.PI * 2));
             }
         }
 
@@ -53,7 +54,7 @@ namespace Programe.Server
                 ships.Remove(ship);
             }
 
-            while (spawnQueue.Count > 0)
+            while (SpawnQueue.Count > 0)
             {
                 Spawn();
             }
@@ -86,24 +87,16 @@ namespace Programe.Server
             }
         }
 
-        public static void Queue(Ship ship)
-        {
-            lock (spawnQueue)
-            {
-                spawnQueue.Enqueue(ship);
-            }
-        }
-
         private static void Spawn()
         {
-            lock (spawnQueue)
+            lock (SpawnQueue)
             {
-                var ship = spawnQueue.Dequeue();
+                var ship = SpawnQueue.Dequeue();
                 var body = CreateShip();
                 body.UserData = new RadarData(RadarType.Ship, new NetShip(ship));
 
                 body.Position = FindOpenSpace(new Vector2(2.5f, 2.5f));
-                body.Rotation = (float)(random.NextDouble() * (Math.PI * 2));
+                body.Rotation = (float)(Random.NextDouble() * (Math.PI * 2));
 
                 ship.Spawn(world, body);
                 ships.Add(ship);
@@ -116,7 +109,7 @@ namespace Programe.Server
             bool empty;
             do
             {
-                position = new Vector2((float)random.NextDouble() * width, (float)random.NextDouble() * height);
+                position = new Vector2((float)Random.NextDouble() * width, (float)Random.NextDouble() * height);
                 empty = true;
 
                 var aabb = new AABB(position, size.X, size.Y);

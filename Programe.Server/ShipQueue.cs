@@ -42,6 +42,22 @@ namespace Programe.Server
                 }
 
                 queue.AddLast(ship);
+
+                message = null;
+                return true;
+            }
+        }
+
+        public Ship Dequeue()
+        {
+            lock (queue)
+            {
+                if (Count == 0)
+                    return null;
+
+                var value = queue.First.Value;
+                queue.RemoveFirst();
+                return value;
             }
         }
     }

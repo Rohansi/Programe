@@ -61,6 +61,7 @@
     <Compile Include="SessionManager.cs" />
     <Compile Include="Ship.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="ShipQueue.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Programe.Machine\Programe.Machine.csproj">
