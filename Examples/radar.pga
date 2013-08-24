@@ -1,0 +1,113 @@
+// initialize all interrupts to use default handler
+mov r0, interruptTable
+xor r1, r1
+copyLoop:
+	mov [r0 + r1], defaultInterruptHandler
+	inc r1
+	cmp r1, 32
+	jb copyLoop
+	
+// register timer IRQ
+mov [r0], timerInterruptHandler
+
+// register the radar IRQ
+mov [r0 + 2], radarInterruptHandler
+
+// enables interrupts
+ivt interruptTable
+
+// tell radar to start dumping radar data
+mov ra, radarData
+int 2
+
+// move forward
+mov ra, 0
+mov rb, 2
+int 3
+
+halt:
+	jmp halt
+	
+defaultInterruptHandler:
+	iret
+
+timerInterruptHandler:
+	// get current heading
+	mov ra, 2
+	int 1
+	
+	mov r0, ra
+	mov r1, [target]
+	call closestDirection
+	
+	mov rb, 10
+	mul rb, r2
+	
+	mov ra, 1
+	int 3
+	iret
+
+// Returns the direction to spin to reach a target angle the fastest
+// r0 - current heading
+// r1 - target heading
+// r2 - return value
+closestDirection:
+	push r0
+	push r3 // temp
+	push r4 // temp
+	
+	mov r2, 1
+	xor r3, r3
+	xor r4, r4
+	sub r0, r1
+	cmp r0, 0
+	jbe .below0
+	inc r3
+.below0:
+	abs r0
+	cmp r0, 100
+	jbe .below100
+	inc r4
+.below100:
+	xor r3, r4
+	jz .default
+	mov r2, -1
+.default:
+
+	pop r4
+	pop r3
+	pop r0
+	ret
+	
+target:
+	dat 255
+	
+radarInterruptHandler:
+	mov r0, radarData  // array start
+	xor r1, r1         // i
+	mov r7, 255        // closest i
+	mov r8, 255        // closest dist
+	.loop:
+		mov r4, [r0 + r1]
+		shr r4, 8
+		cmp r4, 2
+		jne .skip     // not an asteroid
+		mov r4, [r0 + r1]
+		and r4, 255
+		cmp r4, r8
+		jae .skip     // farther than we have
+		mov r7, r1    // save i
+		mov r8, r4    // save dist
+	.skip:
+		inc r1
+		cmp r1, 200
+		jb .loop
+	mov [target], r7
+	int 0
+	iret
+	
+interruptTable:
+	resv 32 // reserve space for the instrrupts
+	
+radarData:
+	resv 200 // and space for the radar data
