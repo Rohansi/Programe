@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Lidgren.Network;
 using Programe.Network;
 using Programe.Network.Packets;
@@ -17,9 +15,11 @@ namespace Programe.Server
         public static void Start()
         {
             Packet.RegisterHandler(PacketId.Auth, HandleAuth);
+            Packet.RegisterHandler(PacketId.Upload, HandleUpload);
 
             NetObject.RegisterNetObject(typeof(NetShip));
             NetObject.RegisterNetObject(typeof(NetAsteroid));
+            NetObject.RegisterNetObject(typeof(NetBullet));
 
             SessionManager = new SessionManager();
 
@@ -119,6 +119,29 @@ namespace Programe.Server
             };
 
             Send(response, session);
+        }
+
+        public static void HandleUpload(NetConnection connection, Packet packet)
+        {
+            var upload = (Upload)packet;
+            var session = SessionManager.Get(connection.RemoteUniqueIdentifier);
+
+            string message = null;
+            if (session.Account == null)
+                message = "You need to login to do that.";
+
+            if (message == null)
+            {
+                var ship = new Ship(session.Account.Username, upload.Program);
+                message = Game.SpawnQueue.Enqueue(ship);
+            }
+
+            var messagePacket = new Message()
+            {
+                Title = "Upload",
+                Content = message
+            };
+            Send(messagePacket, session);
         }
     }
 }

@@ -10,14 +10,19 @@ namespace Programe.Network.Packets
             get { return PacketId.Message; }
         }
 
+        public string Title;
+        public string Content;
+
         protected override void Write(NetOutgoingMessage message)
         {
-            throw new NotImplementedException();
+            message.Write(Title);
+            message.Write(Content);
         }
 
         protected override void Read(NetIncomingMessage message)
         {
-            throw new NotImplementedException();
+            Title = message.ReadString();
+            Content = message.ReadString();
         }
     }
 }

@@ -10,17 +10,8 @@ namespace Programe.Server
     {
         static void Main(string[] args)
         {
-            var bytes = File.ReadAllBytes("out.pge");
-            var shorts = new short[bytes.Length / 2];
-            Buffer.BlockCopy(bytes, 0, shorts, 0, bytes.Length);
-
-            Game.Start(17.5f, 9.375f);
+            Game.Start(32, 32, 8);
             Server.Start();
-
-            for (var i = 0; i < 4; i++)
-            {
-                Game.SpawnQueue.Enqueue(new Ship(i.ToString("G"), shorts));
-            }
             
             var watch = Stopwatch.StartNew();
             var accumulator = 0.0;

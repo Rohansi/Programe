@@ -10,14 +10,25 @@ namespace Programe.Network.Packets
             get { return PacketId.Upload; }
         }
 
+        public short[] Program;
+
         protected override void Write(NetOutgoingMessage message)
         {
-            throw new NotImplementedException();
+            message.Write((ushort)Program.Length);
+            foreach (var s in Program)
+            {
+                message.Write(s);
+            }
         }
 
         protected override void Read(NetIncomingMessage message)
         {
-            throw new NotImplementedException();
+            var length = message.ReadUInt16();
+            Program = new short[length];
+            for (var i = 0; i < length; i++)
+            {
+                Program[i] = message.ReadInt16();
+            }
         }
     }
 }

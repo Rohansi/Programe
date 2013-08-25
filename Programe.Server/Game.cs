@@ -17,22 +17,27 @@ namespace Programe.Server
     {
         private static readonly Random Random = new Random();
 
-        public static ShipQueue SpawnQueue; 
+        public static ShipQueue SpawnQueue;
+        public static World World;
 
         private static float width;
         private static float height;
         private static int sceneTimer;
-        private static World world;
+
+        private static int maxShips;
         private static List<Ship> ships;
 
-        public static void Start(float w, float h)
+        public static void Start(float w, float h, int max)
         {
             width = w;
             height = h;
 
             // TODO: investivate fix for farseer quadreee: http://farseerphysics.codeplex.com/workitem/30555
-            world = new World(new Vector2(0, 0));
+            World = new World(new Vector2(0, 0));
+
+            maxShips = max;
             ships = new List<Ship>();
+
             SpawnQueue = new ShipQueue(32);
 
             CreateBounds(width, height);
@@ -50,11 +55,12 @@ namespace Programe.Server
         {
             foreach (var ship in ships.Where(s => s.Dead).ToList())
             {
-                world.RemoveBody(ship.Body);
+                World.RemoveBody(ship.Body);
                 ships.Remove(ship);
             }
 
-            while (SpawnQueue.Count > 0)
+            // TODO: shouldn't allow multiple ships from one person
+            while (ships.Count < maxShips && SpawnQueue.Count > 0)
             {
                 Spawn();
             }
@@ -64,14 +70,14 @@ namespace Programe.Server
                 ship.Update();
             }
 
-            world.Step((float)Constants.SecondsPerUpdate);
+            World.Step((float)Constants.SecondsPerUpdate);
 
             sceneTimer++;
-            if (sceneTimer >= 3)
+            if (sceneTimer >= 1) // TODO: increase this when the client lerps pls
             {
                 var scene = new Scene();
 
-                foreach (var body in world.BodyList)
+                foreach (var body in World.BodyList)
                 {
                     var data = (RadarData)body.UserData;
 
@@ -98,7 +104,7 @@ namespace Programe.Server
                 body.Position = FindOpenSpace(new Vector2(2.5f, 2.5f));
                 body.Rotation = (float)(Random.NextDouble() * (Math.PI * 2));
 
-                ship.Spawn(world, body);
+                ship.Spawn(World, body);
                 ships.Add(ship);
             }
         }
@@ -113,7 +119,7 @@ namespace Programe.Server
                 empty = true;
 
                 var aabb = new AABB(position, size.X, size.Y);
-                world.QueryAABB(f =>
+                World.QueryAABB(f =>
                 {
                     empty = false;
                     return true;
@@ -124,37 +130,9 @@ namespace Programe.Server
         }
 
         #region Physics Objects
-        private static void CreateBullets(Body ship)
-        {
-            Func<Vector2, Body> createBullet = pos =>
-            {
-                var body = new Body(world);
-                body.BodyType = BodyType.Dynamic;
-                body.IsBullet = true;
-
-                var shape = new CircleShape(0.15f / 4, 1);
-                body.CreateFixture(shape);
-
-                body.Position = ship.Position + ship.GetWorldVector(pos);
-                body.Rotation = ship.Rotation;
-                body.ApplyForce(body.GetWorldVector(new Vector2(0.0f, -15.0f)));
-
-                body.OnCollision += (a, b, contact) =>
-                {
-                    world.RemoveBody(body);
-                    return false;
-                };
-
-                return body;
-            };
-
-            createBullet(new Vector2(-0.575f, -0.20f));
-            createBullet(new Vector2(0.575f, -0.20f));
-        }
-
         private static Body CreateShip()
         {
-            var body = new Body(world);
+            var body = new Body(World);
             body.BodyType = BodyType.Dynamic;
             body.LinearDamping = 0.5f;
             body.AngularDamping = 1f;
@@ -175,7 +153,7 @@ namespace Programe.Server
 
         private static Body CreateAsteroid()
         {
-            var body = new Body(world);
+            var body = new Body(World);
             body.BodyType = BodyType.Dynamic;
             body.LinearDamping = 1f;
             body.AngularDamping = 1f;
@@ -188,7 +166,7 @@ namespace Programe.Server
 
         private static void CreateBounds(float width, float height)
         {
-            var body = new Body(world);
+            var body = new Body(World);
             body.BodyType = BodyType.Static;
             body.UserData = new RadarData(RadarType.Wall);
 

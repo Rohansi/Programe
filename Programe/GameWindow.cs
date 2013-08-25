@@ -1,5 +1,6 @@
 ﻿using System;
 using Programe.Gui;
+using Programe.Network;
 using SFML.Graphics;
 using SFML.Window;
 using Texter;
@@ -25,8 +26,10 @@ namespace Programe
             Window.SetFramerateLimit(60);
             Window.Closed += (sender, args) => Window.Close();
                 
-            GameView = Window.DefaultView;
-            overlayView = Window.DefaultView;
+            GameView = new View(Window.DefaultView);
+            GameView.Zoom(2f);
+
+            overlayView = new View(Window.DefaultView);
 
             TextDisplay.Initialize();
             Overlay = new TextDisplay(Width, Height);
@@ -41,10 +44,25 @@ namespace Programe
                 Window.SetView(overlayView);
                 Window.DispatchEvents();
 
-                Window.Clear(Color.Black);
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Left))
+                    GameView.Center += new Vector2f(-15, 0);
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Right))
+                    GameView.Center += new Vector2f(15, 0);
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Up))
+                    GameView.Center += new Vector2f(0, -15);
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Down))
+                    GameView.Center += new Vector2f(0, 15);
+                if (Keyboard.IsKeyPressed(Keyboard.Key.Return))
+                    GameView.Center = new Vector2f(16 * Constants.PixelsPerMeter, 16 * Constants.PixelsPerMeter);
+
+                Window.Clear(Color.White);
                 Window.SetView(GameView);
 
-                // draw stuff
+                // TODO: get map dimensions from server
+                var border = new RectangleShape(new Vector2f(32 * Constants.PixelsPerMeter, 32 * Constants.PixelsPerMeter));
+                border.FillColor = Color.Black;
+                Window.Draw(border);
+
                 if (Client.Objects != null)
                 {
                     foreach (var o in Client.Objects)

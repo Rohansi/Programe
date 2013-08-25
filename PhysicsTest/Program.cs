@@ -71,7 +71,7 @@ namespace PhysicsTest
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.S))
                 {
-                    ship.ApplyForce(ship.GetWorldVector(new Vector2(0.0f, 10.0f)));
+                    ship.ApplyForce(ship.GetWorldVector(new Vector2(0.0f, 25.0f)));
                 }
 
                 if (Keyboard.IsKeyPressed(Keyboard.Key.A))

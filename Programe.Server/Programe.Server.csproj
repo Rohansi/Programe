@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Account.cs" />
     <Compile Include="NetObjects\NetAsteroid.cs" />
+    <Compile Include="NetObjects\NetBullet.cs" />
     <Compile Include="NetObjects\NetShip.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Programe.Gui;
 using Programe.Gui.Widgets;
 
@@ -167,9 +168,40 @@ namespace Programe
             ship.Items.Add(log);
             ship.Items.Add(upload);
             menu.Items.Add(ship);
+
+            upload.Clicked += () =>
+            {
+                var dialog = new System.Windows.Forms.OpenFileDialog();
+                dialog.Filter = "Programe Executables (*.pge)|*.pge";
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    try
+                    {
+                        var bytes = File.ReadAllBytes(dialog.FileName);
+                        if (bytes.Length == 0 || bytes.Length > (short.MaxValue * 2) || bytes.Length % 2 != 0)
+                        {
+                            ShowMessage("Upload", "Invalid file size.");
+                            return;
+                        }
+
+                        var shorts = new short[bytes.Length / 2];
+                        Buffer.BlockCopy(bytes, 0, shorts, 0, bytes.Length);
+
+                        var uploadPacket = new Network.Packets.Upload();
+                        uploadPacket.Program = shorts;
+                        Client.Send(uploadPacket);
+                    }
+                    catch (Exception e)
+                    {
+                        ShowMessage("Upload", string.Format("Failed to upload program: {0}", e));
+                    }
+                }
+            };
             #endregion
 
             #region Debug Messages Menu
+
 #if DEBUG
             var debug = new MenuItem("Debug Messages");
             menu.Items.Add(debug);
@@ -180,6 +212,7 @@ namespace Programe
                 debugWindow.Focus();
             };
 #endif
+
             #endregion
         }
 
@@ -191,6 +224,8 @@ namespace Programe
         public static void Disconnected()
         {
             ResetAccountWindows();
+
+            // TODO: show message if disconnected
         }
 
         public static void ShowMessage(string caption, string message)

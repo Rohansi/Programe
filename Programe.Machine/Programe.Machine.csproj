@@ -45,6 +45,7 @@
     <Compile Include="DebugInfo.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="Devices\Engines.cs" />
+    <Compile Include="Devices\Guns.cs" />
     <Compile Include="Devices\Navigation.cs" />
     <Compile Include="Devices\Radar.cs" />
     <Compile Include="Devices\Timer.cs" />

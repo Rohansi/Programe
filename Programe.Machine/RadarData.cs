@@ -4,7 +4,7 @@ namespace Programe.Machine
 {
     public enum RadarType : byte
     {
-        Wall, Ship, Asteroid
+        Wall, Ship, Asteroid, Bullet
     }
     
     /// <summary>

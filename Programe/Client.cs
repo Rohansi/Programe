@@ -23,9 +23,11 @@ namespace Programe
         {
             Packet.RegisterHandler(PacketId.Scene, HandleScene);
             Packet.RegisterHandler(PacketId.AuthResponse, HandleAuthResponse);
+            Packet.RegisterHandler(PacketId.Message, HandleMessage);
 
             NetObject.RegisterNetObject(typeof(NetShip));
             NetObject.RegisterNetObject(typeof(NetAsteroid));
+            NetObject.RegisterNetObject(typeof(NetBullet));
 
             var config = new NetPeerConfiguration(Constants.ApplicationIdentifier);
             client = new NetClient(config);
@@ -119,7 +121,7 @@ namespace Programe
         private static void HandleScene(NetConnection connection, Packet packet)
         {
             var scene = (Scene)packet;
-            Objects = scene.Objects.OfType<DrawableNetObject>().ToList();
+            Objects = scene.Objects.OfType<DrawableNetObject>().OrderByDescending(o => o.Type).ToList();
         }
 
         private static void HandleAuthResponse(NetConnection connection, Packet packet)
@@ -133,6 +135,12 @@ namespace Programe
             }
 
             Interface.ShowMessage(resp.Type.ToString(), resp.Message);
+        }
+
+        private static void HandleMessage(NetConnection connection, Packet packet)
+        {
+            var message = (Message)packet;
+            Interface.ShowMessage(message.Title, message.Content);
         }
     }
 }

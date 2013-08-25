@@ -5,7 +5,7 @@ namespace Programe.Network
 {
     public enum NetObjectType : byte
     {
-        Asteroid, Ship
+        Asteroid, Ship, Bullet
     }
 
     public abstract partial class NetObject
