@@ -165,7 +165,7 @@ namespace Programe
             var ship = new MenuItem("Ship");
             var log = new MenuItem("Event Log");
             var upload = new MenuItem("Upload");
-            ship.Items.Add(log);
+            //ship.Items.Add(log);
             ship.Items.Add(upload);
             menu.Items.Add(ship);
 
