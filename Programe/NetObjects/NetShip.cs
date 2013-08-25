@@ -26,8 +26,7 @@ namespace Programe.NetObjects
         {
             x = message.ReadFloat();
             y = message.ReadFloat();
-            rotation = ((float)message.ReadUInt16()) / ushort.MaxValue;
-            rotation *= 360f;
+            rotation = message.ReadUInt16().FromNetworkRotation() * (180f / (float)Math.PI);
         }
 
         public override void Draw(RenderTarget target, RenderStates states)

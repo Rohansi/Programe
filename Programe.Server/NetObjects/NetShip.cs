@@ -24,14 +24,7 @@ namespace Programe.Server.NetObjects
         {
             message.Write(ship.Body.Position.X * Constants.PixelsPerMeter);
             message.Write(ship.Body.Position.Y * Constants.PixelsPerMeter);
-
-            const float maxRadians = (float)Math.PI * 2;
-            var rotation = ship.Body.Rotation % maxRadians;
-            if (rotation < 0)
-                rotation += maxRadians;
-            rotation /= maxRadians;
-
-            message.Write((ushort)(rotation * ushort.MaxValue));
+            message.Write(ship.Body.Rotation.ToNetworkRotation());
         }
 
         protected override void Read(NetIncomingMessage message)

@@ -4,6 +4,7 @@ using Programe.Gui.Widgets;
 
 namespace Programe
 {
+    // TODO: clean this awful class
     static class Interface
     {
         private static GuiSystem gui;
@@ -20,8 +21,8 @@ namespace Programe
         private static TextBox registerPassword1;
         private static TextBox registerPassword2;
 
-        private static ListBox statusWindowList;
-        
+        private static ListBox debugWindowList;
+
         public static void Start(GuiSystem guiSystem)
         {
             gui = guiSystem;
@@ -44,14 +45,14 @@ namespace Programe
             messageWindow.Add(messageWindowButton);
             #endregion
 
-            #region Status Window
-            var statusWindow = new Window(10, 10, 70, 20, "Status Messages");
-            statusWindow.Visible = false;
-            desktop.Add(statusWindow);
+            #region Debug Messages Window
+            var debugWindow = new Window(10, 10, 70, 20, "Debug Messages");
+            debugWindow.Visible = false;
+            desktop.Add(debugWindow);
 
-            statusWindowList = new ListBox(1, 0, 66, 18);
-            statusWindowList.SelectEnabled = false;
-            statusWindow.Add(statusWindowList);
+            debugWindowList = new ListBox(1, 0, 66, 18);
+            debugWindowList.SelectEnabled = false;
+            debugWindow.Add(debugWindowList);
             #endregion
 
             #region Login Window
@@ -127,11 +128,17 @@ namespace Programe
             };
             #endregion
 
-            #region Menu
             var menu = new MenuBar();
+            gui.Add(menu);
 
+            #region Account Menu
             var account = new MenuItem("Account");
             var login = new MenuItem("Login");
+            var register = new MenuItem("Register");
+            account.Items.Add(login);
+            account.Items.Add(register);
+            menu.Items.Add(account);
+
             login.Clicked += () =>
             {
                 if (Offline())
@@ -142,7 +149,6 @@ namespace Programe
                 loginWindow.Focus();
             };
 
-            var register = new MenuItem("Register");
             register.Clicked += () =>
             {
                 if (Offline())
@@ -152,22 +158,28 @@ namespace Programe
                 registerWindow.Visible = true;
                 registerWindow.Focus();
             };
+            #endregion
 
-            account.Items.Add(login);
-            account.Items.Add(register);
-            menu.Items.Add(account);
+            #region Ship Menu
+            var ship = new MenuItem("Ship");
+            var log = new MenuItem("Event Log");
+            var upload = new MenuItem("Upload");
+            ship.Items.Add(log);
+            ship.Items.Add(upload);
+            menu.Items.Add(ship);
+            #endregion
 
-            var view = new MenuItem("View");
-            var status = new MenuItem("Status Messages");
-            status.Clicked += () =>
+            #region Debug Messages Menu
+#if DEBUG
+            var debug = new MenuItem("Debug Messages");
+            menu.Items.Add(debug);
+
+            debug.Clicked += () =>
             {
-                statusWindow.Visible = true;
-                statusWindow.Focus();
+                debugWindow.Visible = true;
+                debugWindow.Focus();
             };
-
-            view.Items.Add(status);
-            menu.Items.Add(view);
-            gui.Add(menu);
+#endif
             #endregion
         }
 
@@ -193,9 +205,9 @@ namespace Programe
 
         public static void AddStatusMessage(string message)
         {
-            if (statusWindowList.Items.Count > 150)
-                statusWindowList.Items.RemoveAt(0);
-            statusWindowList.Items.Add(new ListBoxItem(message));
+            if (debugWindowList.Items.Count > 150)
+                debugWindowList.Items.RemoveAt(debugWindowList.Items.Count - 1);
+            debugWindowList.Items.Insert(0, new ListBoxItem(message));
         }
 
         public static void ResetAccountWindows()

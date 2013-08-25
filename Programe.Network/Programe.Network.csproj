@@ -46,10 +46,13 @@
     <Compile Include="Constants.cs" />
     <Compile Include="NetObject.cs" />
     <Compile Include="NetObject.Static.cs" />
+    <Compile Include="NetUtil.cs" />
     <Compile Include="Packet.cs" />
     <Compile Include="Packet.Static.cs" />
     <Compile Include="Packets\Auth.cs" />
     <Compile Include="Packets\AuthResponse.cs" />
+    <Compile Include="Packets\Message.cs" />
+    <Compile Include="Packets\Upload.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Packets\Scene.cs" />
   </ItemGroup>

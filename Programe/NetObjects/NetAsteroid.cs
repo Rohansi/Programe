@@ -26,13 +26,13 @@ namespace Programe.NetObjects
         {
             x = message.ReadFloat();
             y = message.ReadFloat();
-            rotation = message.ReadFloat();
+            rotation = message.ReadUInt16().FromNetworkRotation() * (180f / (float)Math.PI);
         }
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-            sprite.Position = new Vector2f(x * Constants.PixelsPerMeter, y * Constants.PixelsPerMeter);
-            sprite.Rotation = rotation * (180f / (float)Math.PI);
+            sprite.Position = new Vector2f(x, y);
+            sprite.Rotation = rotation;
             target.Draw(sprite);
         }
 

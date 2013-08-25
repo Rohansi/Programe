@@ -19,8 +19,7 @@ namespace Programe.Server
 
             for (var i = 0; i < 4; i++)
             {
-                string message;
-                Game.SpawnQueue.Enqueue(new Ship(i.ToString("G"), shorts), out message);
+                Game.SpawnQueue.Enqueue(new Ship(i.ToString("G"), shorts));
             }
             
             var watch = Stopwatch.StartNew();

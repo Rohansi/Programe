@@ -23,9 +23,9 @@ namespace Programe.Server.NetObjects
 
         protected override void Write(NetOutgoingMessage message)
         {
-            message.Write(body.Position.X);
-            message.Write(body.Position.Y);
-            message.Write(body.Rotation);
+            message.Write(body.Position.X * Constants.PixelsPerMeter);
+            message.Write(body.Position.Y * Constants.PixelsPerMeter);
+            message.Write(body.Rotation.ToNetworkRotation());
         }
 
         protected override void Read(NetIncomingMessage message)

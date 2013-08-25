@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Programe.Server
 {
@@ -25,15 +24,12 @@ namespace Programe.Server
             queue = new LinkedList<Ship>();
         }
 
-        public bool Enqueue(Ship ship, out string message)
+        public string Enqueue(Ship ship)
         {
             lock (queue)
             {
                 if (queue.Count >= maxCount)
-                {
-                    message = "The spawn queue is full.";
-                    return false;
-                }
+                    return "The spawn queue is full.";
 
                 var removeList = queue.Where(i => i.Name == ship.Name).ToList();
                 foreach (var remove in removeList)
@@ -42,9 +38,7 @@ namespace Programe.Server
                 }
 
                 queue.AddLast(ship);
-
-                message = null;
-                return true;
+                return "Your ship was added to the spawn queue and will spawn shortly.";
             }
         }
 
