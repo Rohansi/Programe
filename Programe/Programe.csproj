@@ -95,6 +95,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\SourceSansPro-Regular.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\texter.frag">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

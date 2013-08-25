@@ -27,8 +27,6 @@ namespace Programe
             Window.Closed += (sender, args) => Window.Close();
                 
             GameView = new View(Window.DefaultView);
-            GameView.Zoom(2f);
-
             overlayView = new View(Window.DefaultView);
 
             TextDisplay.Initialize();

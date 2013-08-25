@@ -103,7 +103,6 @@ radarInterruptHandler:
 		cmp r1, 200
 		jb .loop
 	mov [target], r7
-	int 0
 	iret
 	
 interruptTable:

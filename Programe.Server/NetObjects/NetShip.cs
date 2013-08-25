@@ -22,6 +22,7 @@ namespace Programe.Server.NetObjects
 
         protected override void Write(NetOutgoingMessage message)
         {
+            message.Write(ship.Name);
             message.Write(ship.Body.Position.X * Constants.PixelsPerMeter);
             message.Write(ship.Body.Position.Y * Constants.PixelsPerMeter);
             message.Write(ship.Body.Rotation.ToNetworkRotation());
