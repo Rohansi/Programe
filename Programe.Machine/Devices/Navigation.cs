@@ -37,7 +37,7 @@ namespace Programe.Machine.Devices
                     machine.Registers[0xB] = (short)(body.LinearVelocity.Y * Constants.PixelsPerMeter);
                     break;
                 case 1: // get angular speed
-                    machine.Registers[0xA] = Util.ToMachineRotation(body.AngularVelocity);
+                    machine.Registers[0xA] = (short)(body.AngularVelocity % Radar.Rays);
                     break;
                 case 2: // get heading
                     machine.Registers[0xA] = Util.ToMachineRotation(body.Rotation - ((float)Math.PI / 2));

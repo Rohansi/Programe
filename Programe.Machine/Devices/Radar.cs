@@ -81,8 +81,7 @@ namespace Programe.Machine.Devices
 
                 world.RayCast((f, p, n, fr) =>
                 {
-                    // TODO: everything should have UserData
-                    if (fr > min || f.Body.UserData == null)
+                    if (fr > min)
                         return 1;
 
                     min = fr;

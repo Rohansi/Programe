@@ -254,9 +254,9 @@ namespace Programe.Machine
             Push(IP);
             Push((short)flags);
 
-            foreach (var r in Registers)
+            for (var i = Registers.Length - 1; i >= 0; i--)
             {
-                Push(r);
+                Push(Registers[i]);
             }
 
             IP = Memory[ivt + index];
@@ -266,7 +266,7 @@ namespace Programe.Machine
 
         private void InterruptReturn()
         {
-            for (var i = Registers.Length - 1; i >= 0; i--)
+            for (var i = 0; i < Registers.Length; i++)
             {
                 Registers[i] = Pop();
             }

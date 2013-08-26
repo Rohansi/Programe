@@ -35,6 +35,10 @@ namespace Programe
             gui = new GuiSystem(Window, Width, Height);
             Interface.Start(gui);
 
+            var focus = true;
+            Window.GainedFocus += (sender, args) => focus = true;
+            Window.LostFocus += (sender, args) => focus = false;
+
             while (Window.IsOpen())
             {
                 Client.Update();
@@ -42,16 +46,19 @@ namespace Programe
                 Window.SetView(overlayView);
                 Window.DispatchEvents();
 
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Left))
-                    GameView.Center += new Vector2f(-15, 0);
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Right))
-                    GameView.Center += new Vector2f(15, 0);
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Up))
-                    GameView.Center += new Vector2f(0, -15);
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Down))
-                    GameView.Center += new Vector2f(0, 15);
-                if (Keyboard.IsKeyPressed(Keyboard.Key.Return))
-                    GameView.Center = new Vector2f(16 * Constants.PixelsPerMeter, 16 * Constants.PixelsPerMeter);
+                if (focus)
+                {
+                    if (Keyboard.IsKeyPressed(Keyboard.Key.Left))
+                        GameView.Center += new Vector2f(-15, 0);
+                    if (Keyboard.IsKeyPressed(Keyboard.Key.Right))
+                        GameView.Center += new Vector2f(15, 0);
+                    if (Keyboard.IsKeyPressed(Keyboard.Key.Up))
+                        GameView.Center += new Vector2f(0, -15);
+                    if (Keyboard.IsKeyPressed(Keyboard.Key.Down))
+                        GameView.Center += new Vector2f(0, 15);
+                    if (Keyboard.IsKeyPressed(Keyboard.Key.Return))
+                        GameView.Center = new Vector2f(16 * Constants.PixelsPerMeter, 16 * Constants.PixelsPerMeter);
+                }
 
                 Window.Clear(Color.White);
                 Window.SetView(GameView);
