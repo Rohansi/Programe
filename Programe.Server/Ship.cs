@@ -112,6 +112,9 @@ namespace Programe.Server
         public void Damage(float amount)
         {
             Health -= amount;
+
+            if (Health <= 0)
+                Dead = true;
         }
 
         private void CreateBullets()

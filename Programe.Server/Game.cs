@@ -55,14 +55,14 @@ namespace Programe.Server
         {
             foreach (var ship in ships.Where(s => s.Dead).ToList())
             {
-                World.RemoveBody(ship.Body);
-                ships.Remove(ship);
+                Despawn(ship);
             }
 
-            // TODO: shouldn't allow multiple ships from one person
             while (ships.Count < maxShips && SpawnQueue.Count > 0)
             {
-                Spawn();
+                var ship = SpawnQueue.Dequeue();
+                ships.Where(s => s.Name == ship.Name).ToList().ForEach(Despawn);
+                Spawn(ship);
             }
 
             foreach (var ship in ships)
@@ -93,11 +93,10 @@ namespace Programe.Server
             }
         }
 
-        private static void Spawn()
+        private static void Spawn(Ship ship)
         {
             lock (SpawnQueue)
             {
-                var ship = SpawnQueue.Dequeue();
                 var body = CreateShip();
                 body.UserData = new RadarData(RadarType.Ship, new NetShip(ship));
 
@@ -107,6 +106,12 @@ namespace Programe.Server
                 ship.Spawn(World, body);
                 ships.Add(ship);
             }
+        }
+
+        public static void Despawn(Ship ship)
+        {
+            World.RemoveBody(ship.Body);
+            ships.Remove(ship);
         }
 
         private static Vector2 FindOpenSpace(Vector2 size)

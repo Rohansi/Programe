@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace Programe
 {
@@ -12,10 +13,9 @@ namespace Programe
 
             Console.WriteLine("Using server: {0}", Client.Server);
 
-            Client.Start();
-
-            var gameWindow = new GameWindow();
-            gameWindow.Run();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(Interface.MainForm);
         }
     }
 }

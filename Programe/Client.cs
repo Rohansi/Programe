@@ -58,14 +58,14 @@ namespace Programe
                             Connected = true;
                             LoggedIn = false;
                             Interface.Connected();
-                            Interface.AddStatusMessage(string.Format("Connected to server ({0})", Server));
+                            Console.WriteLine("Connected to server ({0})", Server);
                         }
                         else if (status == NetConnectionStatus.Disconnected)
                         {
                             Connected = false;
                             LoggedIn = false;
                             Interface.Disconnected();
-                            Interface.AddStatusMessage("Disconnected");
+                            Console.WriteLine("Disconnected");
                             Connect();
                         }
                         break;
@@ -122,6 +122,7 @@ namespace Programe
         {
             var scene = (Scene)packet;
             Objects = scene.Objects.OfType<DrawableNetObject>().OrderByDescending(o => o.Type).ToList();
+            Interface.MainForm.UpdateShips();
         }
 
         private static void HandleAuthResponse(NetConnection connection, Packet packet)
@@ -129,10 +130,7 @@ namespace Programe
             var resp = (AuthResponse)packet;
 
             if (resp.Success)
-            {
                 LoggedIn = true;
-                Interface.ResetAccountWindows();
-            }
 
             Interface.ShowMessage(resp.Type.ToString(), resp.Message);
         }

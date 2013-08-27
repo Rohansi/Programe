@@ -8,9 +8,9 @@ namespace Programe.NetObjects
 {
     public class NetShip : DrawableNetObject
     {
-        private string name;
-        private float x;
-        private float y;
+        public string Name;
+        public float X;
+        public float Y;
         private float rotation;
 
         public override NetObjectType Type
@@ -25,23 +25,23 @@ namespace Programe.NetObjects
 
         protected override void Read(NetIncomingMessage message)
         {
-            name = message.ReadString();
-            x = message.ReadFloat();
-            y = message.ReadFloat();
+            Name = message.ReadString();
+            X = message.ReadFloat();
+            Y = message.ReadFloat();
             rotation = message.ReadUInt16().FromNetworkRotation() * (180f / (float)Math.PI);
         }
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-            sprite.Position = new Vector2f(x, y);
+            sprite.Position = new Vector2f(X, Y);
             sprite.Rotation = rotation;
             target.Draw(sprite);
 
-            text.DisplayedString = name;
+            text.DisplayedString = Name;
             var bounds = text.GetLocalBounds();
             text.Origin = new Vector2f(bounds.Width / 2, (bounds.Height / 2) + bounds.Top);
             text.Rotation = rotation - 90;
-            text.Position = new Vector2f(x, y);
+            text.Position = new Vector2f(X, Y);
             target.Draw(text);
         }
 

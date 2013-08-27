@@ -46,33 +46,36 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Texter">
-      <HintPath>..\Libraries\Texter.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="DrawableNetObject.cs" />
-    <Compile Include="GameWindow.cs" />
-    <Compile Include="Gui\Container.cs" />
-    <Compile Include="Gui\GuiSystem.cs" />
-    <Compile Include="Gui\IContainer.cs" />
-    <Compile Include="Gui\TexterBox.cs" />
-    <Compile Include="Gui\Util.cs" />
-    <Compile Include="Gui\Widget.cs" />
-    <Compile Include="Gui\Widgets\Button.cs" />
-    <Compile Include="Gui\Widgets\Label.cs" />
-    <Compile Include="Gui\Widgets\ListBox.cs" />
-    <Compile Include="Gui\Widgets\MenuBar.cs" />
-    <Compile Include="Gui\Widgets\Scrollbar.cs" />
-    <Compile Include="Gui\Widgets\TextBox.cs" />
-    <Compile Include="Gui\Widgets\Window.cs" />
+    <Compile Include="Forms\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\RegisterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\RegisterForm.Designer.cs">
+      <DependentUpon>RegisterForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface.cs" />
     <Compile Include="NetObjects\NetAsteroid.cs" />
     <Compile Include="NetObjects\NetBullet.cs" />
@@ -111,7 +114,17 @@
       <Name>Programe.Network</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\RegisterForm.resx">
+      <DependentUpon>RegisterForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
