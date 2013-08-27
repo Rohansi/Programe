@@ -8,10 +8,9 @@ namespace Programe.Machine.Devices
     {
         public const int Rays = 200;
         private const float MaxDistance = 20;
-        private const double UpdateEvery = 0.5; 
+        private const int UpdateEvery = Constants.InstructionsPerSecond / 2; 
 
-        private bool interruptRequest;
-        private double timer;
+        private int timer;
 
         private World world;
         private Body body;
@@ -25,12 +24,18 @@ namespace Programe.Machine.Devices
 
         public override bool InterruptRequest
         {
-            get { return interruptRequest; }
+            get
+            {
+                if (radarPointer == 0)
+                    return false;
+
+                timer++;
+                return timer >= UpdateEvery;
+            }
         }
 
         public Radar(World world, Body body)
         {
-            interruptRequest = false;
             radarPointer = 0;
             radarData = new short[Rays];
 
@@ -41,7 +46,6 @@ namespace Programe.Machine.Devices
         public override void HandleInterruptRequest(VirtualMachine machine)
         {
             timer -= UpdateEvery;
-            interruptRequest = timer >= UpdateEvery;
 
             RayCast();
 
@@ -54,15 +58,6 @@ namespace Programe.Machine.Devices
         public override void HandleInterrupt(VirtualMachine machine)
         {
             radarPointer = machine.Registers[0xA];
-        }
-
-        public void Update()
-        {
-            if (radarPointer == 0)
-                return;
-
-            timer += Constants.SecondsPerUpdate;
-            interruptRequest = timer >= UpdateEvery;
         }
 
         private void RayCast()

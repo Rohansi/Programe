@@ -83,9 +83,6 @@ namespace Programe.Server
                 return;
             }
 
-            radar.Update();
-            timer.Update();
-
             if (guns.Update())
                 CreateBullets();
 

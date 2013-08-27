@@ -5,10 +5,9 @@ namespace Programe.Machine.Devices
 {
     public class Timer : Device
     {
-        private const double TickEvery = 0.1;
+        private const int TickEvery = Constants.InstructionsPerSecond / 10;
 
-        private double timer;
-        private bool interruptRequest;
+        private int timer;
 
         public override byte Id
         {
@@ -17,24 +16,21 @@ namespace Programe.Machine.Devices
 
         public override bool InterruptRequest
         {
-            get { return interruptRequest; }
+            get
+            {
+                timer++;
+                return timer >= TickEvery;
+            }
         }
 
         public override void HandleInterruptRequest(VirtualMachine machine)
         {
             timer -= TickEvery;
-            interruptRequest = timer >= TickEvery;
         }
 
         public override void HandleInterrupt(VirtualMachine machine)
         {
         
-        }
-
-        public void Update()
-        {
-            timer += Constants.SecondsPerUpdate;
-            interruptRequest = timer >= TickEvery;
         }
     }
 }

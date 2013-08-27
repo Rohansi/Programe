@@ -1,6 +1,6 @@
 [ ] - Fix game code structure
 [ ] - Switch to winforms, move texter gui to texter repo?
-[ ] - Replace device timers with clock-based timers
+[x] - Replace device timers with clock-based timers
 [ ] - Reduce precision of streamed data, nothing needs 4 bytes
 [ ] - Clean up Interface.cs
 [ ] - Offline Debugger
