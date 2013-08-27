@@ -42,30 +42,23 @@ namespace Programe.Forms
 
         public void UpdateShips()
         {
+            var newShipNames = Client.Objects.OfType<NetShip>().Select(s => s.Name).OrderBy(s => s).ToList();
+            if (shipNames.SequenceEqual(newShipNames))
+                return;
+
             Invoke(() =>
             {
-                try
+                PlayerList.Items.Clear();
+                foreach (var n in newShipNames)
                 {
-                    var newShipNames = Client.Objects.OfType<NetShip>().Select(s => s.Name).OrderBy(s => s).ToList();
-                    if (shipNames.SequenceEqual(newShipNames))
-                        return;
-
-                    PlayerList.Items.Clear();
-                    foreach (var n in newShipNames)
-                    {
-                        PlayerList.Items.Add(n);
-                    }
-
-                    PlayerList.SelectedIndex = newShipNames.IndexOf(Following);
-                    if (PlayerList.SelectedIndex == -1)
-                        Following = null;
-
-                    shipNames = newShipNames;
+                    PlayerList.Items.Add(n);
                 }
-                catch (Exception e)
-                {
-                    // hack?
-                }
+
+                shipNames = newShipNames;
+
+                PlayerList.SelectedIndex = newShipNames.IndexOf(Following);
+                if (PlayerList.SelectedIndex == -1)
+                    Following = null;
             });
         }
 
