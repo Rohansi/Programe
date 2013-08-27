@@ -251,6 +251,7 @@ namespace Programe.Machine
 
         public void Interrupt(byte index)
         {
+            Push(SP);
             Push(IP);
             Push((short)flags);
 
@@ -273,6 +274,7 @@ namespace Programe.Machine
 
             flags = (Flags)Pop();
             IP = Pop();
+            SP = Pop();
 
             interrupted = false;
         }
