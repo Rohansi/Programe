@@ -106,7 +106,7 @@ radarInterruptHandler:
 	iret
 	
 interruptTable:
-	resv 32 // reserve space for the instrrupts
+	resv 32 // reserve space for the interrupts
 	
 radarData:
 	resv 200 // and space for the radar data

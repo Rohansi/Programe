@@ -1,0 +1,115 @@
+// initialize all interrupts to use default handler
+mov r0, interruptTable
+xor r1, r1
+copyLoop:
+	mov [r0 + r1], defaultInterruptHandler
+	inc r1
+	cmp r1, 32
+	jb copyLoop
+	
+// register timer IRQ
+mov [r0], timerInterruptHandler
+
+// setup threads
+mov r1, threadStates
+mov [r1 + 0], 10000
+mov [r1 + 1], threadProc1
+add r1, 19
+mov [r1 + 0], 15000
+mov [r1 + 1], threadProc2
+add r1, 19
+mov [r1 + 0], 20000
+mov [r1 + 1], threadProc3
+add r1, 19
+mov [r1 + 0], 25000
+mov [r1 + 1], threadProc4
+
+// switch to the first thread
+mov sp, 10000
+
+// enable interrupts
+ivt interruptTable
+
+// thread 1 - move forwards
+threadProc1:
+	mov ra, 0
+	mov rb, 100
+	int 3
+	jmp threadProc1
+
+// thread 2 - move backwards
+threadProc2:
+	mov ra, 0
+	mov rb, -100
+	int 3
+	jmp threadProc2
+
+// thread 3 - turn clockwise
+threadProc3:
+	mov ra, 1
+	mov rb, 100
+	int 3
+	jmp threadProc3
+	
+// thread 4 - turn counter clockwise
+threadProc4:
+	mov ra, 1
+	mov rb, -100
+	int 3
+	jmp threadProc4
+
+timerInterruptHandler:
+	// r3 = read location
+	// r4 = write location
+	mov r3, sp
+	add r3, 19
+	mov r4, [activeThread]
+	mul r4, 19
+	add r4, threadStates
+	
+	mov r5, 19
+	.save:
+		mov [r4], [r3]
+		dec r3
+		inc r4
+		dec r5
+		jnz .save
+	
+	inc [activeThread]
+	rem [activeThread], [threadCount]
+	
+	// r3 = write location
+	// r4 = read location
+	add r3, 19
+	mov r4, [activeThread]
+	mul r4, 19
+	add r4, threadStates
+	
+	mov r5, 19
+	.restore:
+		mov [r3], [r4]
+		dec r3
+		inc r4
+		dec r5
+		jnz .restore
+	
+	iret
+
+activeThread:
+	dat 0
+
+threadCount:
+	dat 4
+
+// 19 - SP, IP, FLAGS, RF, RE, RD, RC, RB, RA, R9, R8, R7, R6, R5, R4, R3, R2, R1, R0
+threadStates:
+	resv 19
+	resv 19
+	resv 19
+	resv 19
+
+defaultInterruptHandler:
+	iret
+
+interruptTable:
+	resv 32 // reserve space for the interrupts
