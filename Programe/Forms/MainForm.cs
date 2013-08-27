@@ -64,7 +64,7 @@ namespace Programe.Forms
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("");
+                    // hack?
                 }
             });
         }
