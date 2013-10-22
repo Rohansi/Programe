@@ -4,7 +4,6 @@ using System.Linq;
 using System.IO;
 using System.Windows.Forms;
 using Programe.NetObjects;
-using Programe.Network;
 using SFML.Graphics;
 using SFML.Window;
 using View = SFML.Graphics.View;
@@ -14,9 +13,11 @@ namespace Programe.Forms
     public partial class MainForm : Form
     {
         private List<string> shipNames;
+        private Font font = new Font("Data/SourceSansPro-Regular.otf");
 
         public RenderWindow Window;
         public Camera Camera;
+        public Camera HudCamera;
         public string Following;
 
         public MainForm()
@@ -30,11 +31,15 @@ namespace Programe.Forms
             Window.SetFramerateLimit(60);
 
             Camera = new Camera(Window.DefaultView);
+            HudCamera = new Camera(Window.DefaultView);
 
             Window.Resized += (sender, args) =>
             {
                 var view = new View(Camera.Position, new Vector2f(args.Width, args.Height));
                 Camera = new Camera(view);
+
+                view = new View(new Vector2f(args.Width / 2f, args.Height / 2f), new Vector2f(args.Width, args.Height));
+                HudCamera = new Camera(view);
             };
         }
 
@@ -73,7 +78,7 @@ namespace Programe.Forms
                 if (followShip != null)
                     Camera.Position = new Vector2f(followShip.X, followShip.Y);
                 else
-                    Camera.Position = new Vector2f(16 * Constants.PixelsPerMeter, 16 * Constants.PixelsPerMeter);
+                    Camera.Position = new Vector2f(Client.Width / 2, Client.Height / 2);
             }
 
             Camera.Apply(Window);
@@ -85,6 +90,14 @@ namespace Programe.Forms
             border.FillColor = new Color(21, 15, 24);
             Window.Draw(border);
 
+            if (Client.StaticObjects != null)
+            {
+                foreach (var o in Client.StaticObjects)
+                {
+                    Window.Draw(o);
+                }
+            }
+
             if (Client.Objects != null)
             {
                 foreach (var o in Client.Objects)
@@ -93,13 +106,38 @@ namespace Programe.Forms
                 }
             }
 
-            if (Client.StaticObjects != null)
+            #region HUD
+            HudCamera.Apply(Window);
+            if (Client.Objects != null && Keyboard.IsKeyPressed(Keyboard.Key.LControl))
             {
-                foreach (var o in Client.StaticObjects)
+                foreach (var ship in Client.Objects.OfType<NetShip>())
                 {
-                    Window.Draw(o);
+                    const float healthHeight = 24;
+                    const float healthWidth = 124;
+                    
+                    var position = ToHudPosition(new Vector2f(ship.X, ship.Y));
+
+                    var background = new RectangleShape(new Vector2f(healthWidth, healthHeight));
+                    background.Origin = background.Size / 2;
+                    background.FillColor = new Color(0, 0, 0, 128);
+                    background.Position = position;
+                    Window.Draw(background);
+
+                    var health = new RectangleShape(new Vector2f((healthWidth - 6) * ship.Health, healthHeight - 6));
+                    health.Origin = background.Size / 2;
+                    health.FillColor = new Color(0, 120, 0);
+                    health.Position = position + new Vector2f(3, 3);
+                    Window.Draw(health);
+
+                    var text = new Text(ship.Name, font, (uint)healthHeight - 8);
+                    var bounds = text.GetLocalBounds();
+                    text.Origin = new Vector2f(bounds.Width / 2, (bounds.Height / 2) + bounds.Top);
+                    text.Color = Color.White;
+                    text.Position = position;
+                    Window.Draw(text);
                 }
             }
+            #endregion
 
             Window.Display();
         }
@@ -160,6 +198,11 @@ namespace Programe.Forms
         public void Invoke(Action action)
         {
             Invoke((Delegate)action);
+        }
+
+        private Vector2f ToHudPosition(Vector2f position)
+        {
+            return HudCamera.Position + (position - Camera.Position) / Camera.Zoom;
         }
     }
 }

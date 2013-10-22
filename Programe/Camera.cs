@@ -16,8 +16,8 @@ namespace Programe
         /// </summary>
         public float Zoom
         {
-            get { return view.Size.X / originalSize.X; }
-            set { view.Size = originalSize; view.Zoom(value); }
+            get { return View.Size.X / originalSize.X; }
+            set { View.Size = originalSize; View.Zoom(value); }
         }
 
         /// <summary>
@@ -25,17 +25,18 @@ namespace Programe
         /// </summary>
         public FloatRect Bounds
         {
-            get { return new FloatRect(view.Center.X - (view.Size.X / 2), view.Center.Y - (view.Size.Y / 2), view.Size.X, view.Size.Y); }
+            get { return new FloatRect(View.Center.X - (View.Size.X / 2), View.Center.Y - (View.Size.Y / 2), View.Size.X, View.Size.Y); }
         }
 
-        private View view;
+        public View View { get; private set; }
+
         private Vector2f originalSize;
 
         public Camera(FloatRect rect) : this(new View(rect)) { }
 
         public Camera(View view)
         {
-            this.view = new View(view);
+            this.View = new View(view);
             Position = view.Size / 2;
             originalSize = view.Size;
         }
@@ -47,8 +48,8 @@ namespace Programe
             center.X += offset;
             center.Y += offset;
 
-            view.Center = center;
-            rt.SetView(view);
+            View.Center = center;
+            rt.SetView(View);
         }
     }
 }

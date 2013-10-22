@@ -23,6 +23,7 @@ namespace Programe.Server.NetObjects
         {
             message.Write((short)(body.Position.X * Constants.PixelsPerMeter));
             message.Write((short)(body.Position.Y * Constants.PixelsPerMeter));
+            message.Write(body.Rotation.ToNetworkRotation());
         }
 
         protected override void Read(NetIncomingMessage message)

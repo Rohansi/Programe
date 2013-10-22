@@ -93,7 +93,7 @@ namespace Programe.Server
             World.Step((float)Constants.SecondsPerUpdate);
 
             sceneTimer++;
-            if (sceneTimer >= 2) // TODO: increase this when the client lerps pls
+            if (sceneTimer >= 1) // TODO: increase this when the client lerps pls
             {
                 var objects = new Objects();
 

@@ -23,10 +23,10 @@ namespace Programe.Forms
 
         private void Register_Click(object sender, EventArgs e)
         {
-            var user = UsernameBox.Text;
-            if (user.Length < 3 || user.Length > 16 || !user.All(c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c)))
+            var user = UsernameBox.Text.Trim();
+            if (user.Length < 3 || user.Length > 16 || !user.All(c => char.IsLetterOrDigit(c) || c == ' '))
             {
-                MessageBox.Show("Usernames must be 3 to 16 characters long and may only contain letters, digits and whitespace.", "Register");
+                MessageBox.Show("Usernames must be 3 to 10 characters long and may only contain letters, digits and spaces.", "Register");
                 return;
             }
 

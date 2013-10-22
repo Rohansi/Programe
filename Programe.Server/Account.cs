@@ -8,7 +8,7 @@ namespace Programe.Server
 {
     public class Account
     {
-        private const string InvalidUsernameMessage = "Usernames must be 3 to 16 characters long and may only contain letters, digits and whitespace.";
+        private const string InvalidUsernameMessage = "Usernames must be 3 to 10 characters long and may only contain letters, digits and spaces.";
         private const string InvalidPasswordMessage = "Passwords must be at least 6 characters long.";
 
         public string Username;
@@ -96,7 +96,8 @@ namespace Programe.Server
 
         private static bool ValidUsername(string username)
         {
-            return !(username.Length < 3 || username.Length > 16 || !username.All(c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c)));
+            username = username.Trim();
+            return !(username.Length < 3 || username.Length > 10 || !username.All(c => char.IsLetterOrDigit(c) || c == ' '));
         }
 
         private static string AccountFilename(string username)

@@ -13,6 +13,7 @@ namespace Programe.NetObjects
 
         private float x;
         private float y;
+        private float rotation;
 
         protected override void Write(NetOutgoingMessage message)
         {
@@ -23,20 +24,22 @@ namespace Programe.NetObjects
         {
             x = message.ReadInt16();
             y = message.ReadInt16();
+            rotation = message.ReadUInt16().FromNetworkRotation() * (180f / (float)Math.PI);
         }
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-            shape.Position = new Vector2f(x, y);
-            target.Draw(shape);
+            sprite.Position = new Vector2f(x, y);
+            sprite.Rotation = rotation;
+            target.Draw(sprite);
         }
 
-        private static CircleShape shape;
+        private static Sprite sprite;
         static NetBullet()
         {
-            shape = new CircleShape(3, 6);
-            shape.Origin = new Vector2f(3, 3);
-            shape.FillColor = Color.White;
+            var texture = new Texture("Data/bullet.png");
+            sprite = new Sprite(texture);
+            sprite.Origin = new Vector2f((float)texture.Size.X / 2, 0);
         }
     }
 }
