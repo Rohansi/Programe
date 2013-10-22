@@ -12,6 +12,8 @@ namespace Programe.Server
 
         public static SessionManager SessionManager;
 
+        public static event Action<Session> Connected;
+
         public static void Start()
         {
             Packet.RegisterHandler(PacketId.Auth, HandleAuth);
@@ -49,7 +51,10 @@ namespace Programe.Server
 
                         if (status == NetConnectionStatus.Connected)
                         {
-                            SessionManager.Create(msg.SenderConnection);
+                            var session = SessionManager.Create(msg.SenderConnection);
+
+                            if (Connected != null)
+                                Connected(session);
                         }
 
                         string reason = msg.ReadString();

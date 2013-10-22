@@ -6,12 +6,10 @@ namespace Programe.Server.NetObjects
 {
     public class NetShip : NetObject
     {
-        private Ship ship;
+        public override NetObjectType Type { get { return NetObjectType.Ship; } }
+        public override bool IsStatic { get { return false; } }
 
-        public override NetObjectType Type
-        {
-            get { return NetObjectType.Ship; }
-        }
+        private Ship ship;
 
         public NetShip() { }
 
@@ -26,11 +24,12 @@ namespace Programe.Server.NetObjects
             message.Write(ship.Body.Position.X * Constants.PixelsPerMeter);
             message.Write(ship.Body.Position.Y * Constants.PixelsPerMeter);
             message.Write(ship.Body.Rotation.ToNetworkRotation());
+            message.Write((byte)(ship.Health * byte.MaxValue));
         }
 
         protected override void Read(NetIncomingMessage message)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }

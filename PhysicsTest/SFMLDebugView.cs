@@ -14,7 +14,7 @@ using Transform = FarseerPhysics.Common.Transform;
 
 namespace PhysicsTest
 {
-    class SFMLDebugView : DebugView
+    class SFMLDebugView : DebugViewBase
     {
         public Color DefaultShapeColor = new Color(229, 178, 178);
         public Color InactiveShapeColor = new Color(128, 128, 76);
@@ -68,15 +68,15 @@ namespace PhysicsTest
 
         private void DrawShape(Fixture fixture, Transform xf, Color color)
         {
-            switch (fixture.ShapeType)
+            switch (fixture.Shape.ShapeType)
             {
                 case ShapeType.Circle:
                     {
                         var circle = (FarseerCircleShape)fixture.Shape;
 
-                        Vector2 center = MathUtils.Multiply(ref xf, circle.Position);
+                        Vector2 center = MathUtils.Mul(ref xf, circle.Position);
                         float radius = circle.Radius;
-                        Vector2 axis = xf.R.Col1;
+                        Vector2 axis = xf.q.GetXAxis();
 
                         DrawSolidCircle(center, radius, axis, color.R, color.G, color.B);
                     }
@@ -90,7 +90,7 @@ namespace PhysicsTest
 
                         for (int i = 0; i < vertexCount; ++i)
                         {
-                            vertices[i] = MathUtils.Multiply(ref xf, poly.Vertices[i]);
+                            vertices[i] = MathUtils.Mul(ref xf, poly.Vertices[i]);
                         }
 
                         DrawSolidPolygon(vertices, vertexCount, color.R, color.G, color.B);
@@ -101,7 +101,7 @@ namespace PhysicsTest
             }
         }
 
-        public override void DrawPolygon(Vector2[] vertices, int count, float red, float blue, float green)
+        public override void DrawPolygon(Vector2[] vertices, int count, float red, float blue, float green, bool closed = true)
         {
             throw new NotImplementedException();
         }

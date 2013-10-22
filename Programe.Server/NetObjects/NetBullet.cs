@@ -7,12 +7,10 @@ namespace Programe.Server.NetObjects
 {
     public class NetBullet : NetObject
     {
-        private Body body;
+        public override NetObjectType Type { get { return NetObjectType.Bullet; } }
+        public override bool IsStatic { get { return false; } }
 
-        public override NetObjectType Type
-        {
-            get { return NetObjectType.Bullet; }
-        }
+        private Body body;
 
         public NetBullet() { }
 
@@ -29,7 +27,7 @@ namespace Programe.Server.NetObjects
 
         protected override void Read(NetIncomingMessage message)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }

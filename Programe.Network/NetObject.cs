@@ -11,6 +11,7 @@ namespace Programe.Network
     public abstract partial class NetObject
     {
         public abstract NetObjectType Type { get; }
+        public abstract bool IsStatic { get; }
 
         protected abstract void Write(NetOutgoingMessage message);
         protected abstract void Read(NetIncomingMessage message);

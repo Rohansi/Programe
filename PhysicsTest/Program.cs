@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using FarseerPhysics;
 using FarseerPhysics.Collision.Shapes;
+using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using SFML.Graphics;
@@ -19,7 +17,7 @@ namespace PhysicsTest
         private static Texture asteroidTex;
         private static World world;
 
-        static void Main(string[] args)
+        static void Main()
         {
             window = new RenderWindow(new VideoMode(1280, 720), "", Styles.Close);
             window.SetFramerateLimit(60);
@@ -165,12 +163,10 @@ namespace PhysicsTest
             body.AngularDamping = 1f;
 
             // tip
-            var rect1 = new PolygonShape(1);
-            rect1.SetAsBox(0.25f, 0.5f, new Vector2(0, -0.5f), 0);
+            var rect1 = new PolygonShape(PolygonTools.CreateRectangle(0.25f, 0.5f, new Vector2(0, -0.5f), 0), 1);
 
             // tail
-            var rect2 = new PolygonShape(3);
-            rect2.SetAsBox(0.75f, 0.5f, new Vector2(0, 0.5f), 0);
+            var rect2 = new PolygonShape(PolygonTools.CreateRectangle(0.75f, 0.5f, new Vector2(0, 0.5f), 0), 3);
 
             body.CreateFixture(rect1);
             body.CreateFixture(rect2);
@@ -215,17 +211,10 @@ namespace PhysicsTest
             var body = new Body(world);
             body.BodyType = BodyType.Static;
 
-            var bottom = new PolygonShape(5);
-            bottom.SetAsBox(width / 2, 0.1f, new Vector2(width / 2, height), 0);
-
-            var top = new PolygonShape(5);
-            top.SetAsBox(width / 2, 0.1f, new Vector2(width / 2, 0), 0);
-
-            var left = new PolygonShape(5);
-            left.SetAsBox(0.1f, height / 2, new Vector2(0, height / 2), 0);
-
-            var right = new PolygonShape(5);
-            right.SetAsBox(0.1f, height / 2, new Vector2(width, height / 2), 0);
+            var bottom = new PolygonShape(PolygonTools.CreateRectangle(width / 2, 0.1f, new Vector2(width / 2, height), 0), 5);
+            var top = new PolygonShape(PolygonTools.CreateRectangle(width / 2, 0.1f, new Vector2(width / 2, 0), 0), 5);
+            var left = new PolygonShape(PolygonTools.CreateRectangle(0.1f, height / 2, new Vector2(0, height / 2), 0), 5);
+            var right = new PolygonShape(PolygonTools.CreateRectangle(0.1f, height / 2, new Vector2(width, height / 2), 0), 5);
 
             body.CreateFixture(bottom);
             body.CreateFixture(top);

@@ -26,7 +26,7 @@ namespace Programe.Server
         public Ship(string name, short[] program)
         {
             Name = name;
-            Health = 100;
+            Health = 1;
 
             machine = new VirtualMachine();
             for (var i = 0; i < Math.Min(program.Length, short.MaxValue); i++)
@@ -59,7 +59,7 @@ namespace Programe.Server
                 var other = (RadarData)b.Body.UserData;
                 if (other != null && other.Type == RadarType.Bullet)
                 {
-                    Damage(5);
+                    Damage(0.05f);
                     return true;
                 }
 
@@ -68,7 +68,7 @@ namespace Programe.Server
 
                 if (Math.Abs(linear.X) > 4 || Math.Abs(linear.Y) > 4 || Math.Abs(angular) > 4)
                 {
-                    Damage(5);
+                    Damage(0.05f);
                 }
 
                 return true;

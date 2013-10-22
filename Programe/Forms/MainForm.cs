@@ -26,7 +26,7 @@ namespace Programe.Forms
             shipNames = new List<string>();
             Client.Start();
 
-            Window = new RenderWindow(Display.Handle);
+            Window = new RenderWindow(Display.Handle, new ContextSettings(0, 0, 32));
             Window.SetFramerateLimit(60);
 
             Camera = new Camera(Window.DefaultView);
@@ -36,8 +36,6 @@ namespace Programe.Forms
                 var view = new View(Camera.Position, new Vector2f(args.Width, args.Height));
                 Camera = new Camera(view);
             };
-
-            Window.MouseWheelMoved += (sender, args) => Console.WriteLine("asf");
         }
 
         public void UpdateShips()
@@ -81,16 +79,23 @@ namespace Programe.Forms
             Camera.Apply(Window);
             Window.DispatchEvents();
 
-            Window.Clear(Color.White);
+            Window.Clear(Color.Black);
 
-            // TODO: get map dimensions from server
-            var border = new RectangleShape(new Vector2f(32 * Constants.PixelsPerMeter, 32 * Constants.PixelsPerMeter));
-            border.FillColor = Color.Black;
+            var border = new RectangleShape(new Vector2f(Client.Width, Client.Height));
+            border.FillColor = new Color(21, 15, 24);
             Window.Draw(border);
 
             if (Client.Objects != null)
             {
                 foreach (var o in Client.Objects)
+                {
+                    Window.Draw(o);
+                }
+            }
+
+            if (Client.StaticObjects != null)
+            {
+                foreach (var o in Client.StaticObjects)
                 {
                     Window.Draw(o);
                 }

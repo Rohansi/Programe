@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Lidgren.Network;
 using Programe.Network;
 using SFML.Graphics;
@@ -8,18 +9,17 @@ namespace Programe.NetObjects
 {
     public class NetAsteroid : DrawableNetObject
     {
+        public override NetObjectType Type { get { return NetObjectType.Asteroid; } }
+        public override bool IsStatic { get { return true; } }
+
         private float x;
         private float y;
         private float rotation;
-
-        public override NetObjectType Type
-        {
-            get { return NetObjectType.Asteroid; }
-        }
+        private byte type;
 
         protected override void Write(NetOutgoingMessage message)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         protected override void Read(NetIncomingMessage message)
@@ -27,21 +27,29 @@ namespace Programe.NetObjects
             x = message.ReadFloat();
             y = message.ReadFloat();
             rotation = message.ReadUInt16().FromNetworkRotation() * (180f / (float)Math.PI);
+            type = message.ReadByte();
         }
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
+            var sprite = sprites[type];
             sprite.Position = new Vector2f(x, y);
             sprite.Rotation = rotation;
             target.Draw(sprite);
         }
 
-        private static Sprite sprite;
+        private static List<Sprite> sprites;
         static NetAsteroid()
         {
-            var texture = new Texture("Data/asteroid.png");
-            sprite = new Sprite(texture);
-            sprite.Origin = new Vector2f((float)texture.Size.X / 2, (float)texture.Size.Y / 2);
+            sprites = new List<Sprite>();
+
+            for (var i = 0; i < Constants.AsteroidRadiuses.Count; i++)
+            {
+                var texture = new Texture(string.Format("Data/asteroid{0}.png", i));
+                var sprite = new Sprite(texture);
+                sprite.Origin = new Vector2f((float)texture.Size.X / 2, (float)texture.Size.Y / 2);
+                sprites.Add(sprite);
+            }
         }
     }
 }

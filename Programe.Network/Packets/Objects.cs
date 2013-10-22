@@ -1,29 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Lidgren.Network;
 
 namespace Programe.Network.Packets
 {
-    public class Scene : Packet
+    public class Objects : Packet
     {
         public override PacketId Id
         {
-            get { return PacketId.Scene; }
+            get { return PacketId.Objects; }
         }
 
-        public float Width;
-        public float Height;
         public List<NetObject> Items;
 
-        public Scene()
+        public Objects()
         {
             Items = new List<NetObject>();
         }
 
         protected override void Write(NetOutgoingMessage message)
         {
-            message.Write(Width);
-            message.Write(Height);
-
             message.Write((ushort)Items.Count);
             foreach (var obj in Items)
             {
@@ -33,10 +29,8 @@ namespace Programe.Network.Packets
 
         protected override void Read(NetIncomingMessage message)
         {
-            Width = message.ReadFloat();
-            Height = message.ReadFloat();
-
             Items.Clear();
+
             var count = message.ReadUInt16();
             for (var i = 0; i < count; i++)
             {

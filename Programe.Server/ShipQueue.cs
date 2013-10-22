@@ -38,7 +38,7 @@ namespace Programe.Server
                 }
 
                 queue.AddLast(ship);
-                return "Your ship was added to the spawn queue and will spawn shortly.";
+                return "Your ship will spawn shortly.";
             }
         }
 

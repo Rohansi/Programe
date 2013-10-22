@@ -17,11 +17,16 @@ namespace Programe
         public static bool Connected { get; private set; }
         public static bool LoggedIn { get; private set; }
 
+        public static float Width;
+        public static float Height;
+
+        public static List<DrawableNetObject> StaticObjects;
         public static List<DrawableNetObject> Objects;
          
         public static void Start()
         {
             Packet.RegisterHandler(PacketId.Scene, HandleScene);
+            Packet.RegisterHandler(PacketId.Objects, HandleObjects);
             Packet.RegisterHandler(PacketId.AuthResponse, HandleAuthResponse);
             Packet.RegisterHandler(PacketId.Message, HandleMessage);
 
@@ -121,7 +126,15 @@ namespace Programe
         private static void HandleScene(NetConnection connection, Packet packet)
         {
             var scene = (Scene)packet;
-            Objects = scene.Objects.OfType<DrawableNetObject>().OrderByDescending(o => o.Type).ToList();
+            Width = scene.Width;
+            Height = scene.Height;
+            StaticObjects = scene.Items.OfType<DrawableNetObject>().OrderByDescending(o => o.Type).ToList();
+        }
+
+        private static void HandleObjects(NetConnection connection, Packet packet)
+        {
+            var objects = (Objects)packet;
+            Objects = objects.Items.OfType<DrawableNetObject>().OrderByDescending(o => o.Type).ToList();
             Interface.MainForm.UpdateShips();
         }
 

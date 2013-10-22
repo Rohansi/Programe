@@ -8,17 +8,15 @@ namespace Programe.NetObjects
 {
     public class NetBullet : DrawableNetObject
     {
+        public override NetObjectType Type { get { return NetObjectType.Bullet; } }
+        public override bool IsStatic { get { return false; } }
+
         private float x;
         private float y;
 
-        public override NetObjectType Type
-        {
-            get { return NetObjectType.Bullet; }
-        }
-
         protected override void Write(NetOutgoingMessage message)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         protected override void Read(NetIncomingMessage message)
