@@ -41,8 +41,8 @@ Instructions
 1A  JB    DST         Jump if below
 1B  JBE   DST         Jump if below or equal
 1C  RAND  DST         Obtain a random number
-1D  INT   DST, SRC    Call interrupt
-1E  IRET  DST, SRC    Return from interrupt
+1D  INT   DST         Call interrupt
+1E  IRET              Return from interrupt
 1F  IVT   DST         Set the location of the interrupt vector table
 20  ABS   DST         Absolute value
 
@@ -68,7 +68,7 @@ The internal flags register has a flag for each condition:
 Bytecode
 --------------------
 Instructions are assembled into the following format:
- AAAAAAAADDDDEEEE POBBBBBBPOCCCCCC <Payload>
+ AAAAAAAA DDDDEEEE | POBBBBBB POCCCCCC | <Payload>
 	
  A   Opcode (see first column in instructions)
  B   Left operand (DST)
