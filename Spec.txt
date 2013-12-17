@@ -68,7 +68,7 @@ The internal flags register has a flag for each condition:
 Bytecode
 --------------------
 Instructions are assembled into the following format:
- AAAAAAAA DDDDEEEE | POBBBBBB POCCCCCC | <Payload>
+ AAAAAAAADDDDEEEE | POBBBBBBPOCCCCCC | <Payload>
 	
  A   Opcode (see first column in instructions)
  B   Left operand (DST)
